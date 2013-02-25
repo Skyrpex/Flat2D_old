@@ -1,6 +1,5 @@
 #include "Bone.hpp"
 #include "Attachment.hpp"
-#include "ResizeNode.hpp"
 #include <QGraphicsScene>
 #include <QDebug>
 #include <QStyleOptionGraphicsItem>
@@ -16,7 +15,6 @@ Bone::Bone(const QString &name, Bone *parent)
     : QGraphicsItem(parent)
     , m_isJoint(false)
     , m_name(name)
-    , m_resizeNode(new ResizeNode(this))
     , m_sceneRotation(0)
     , m_sceneScale(1)
 {
@@ -28,8 +26,6 @@ Bone::Bone(const QString &name, Bone *parent)
     }
     setFlags(ItemIsMovable | ItemIsSelectable | ItemIsPanel);
     setAcceptHoverEvents(true);
-
-    addResizeNodesIntoScene();
 }
 
 Bone *Bone::parentBone() const
@@ -134,21 +130,6 @@ void Bone::setScaleFromSceneLength(qreal sceneLength)
     setScaleFromLength(sceneLength);
 }
 
-QVariant Bone::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
-{
-    switch(change) {
-    case ItemSceneHasChanged:
-    case ItemParentHasChanged:
-    case ItemChildAddedChange:
-        addResizeNodesIntoScene();
-
-    default:
-        break;
-    }
-
-    return QGraphicsItem::itemChange(change, value);
-}
-
 void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 //    qDebug() << option->state;
@@ -179,36 +160,7 @@ void Bone::setJoint(bool isJoint)
     m_isJoint = isJoint;
 }
 
-void Bone::addResizeNodesIntoScene() const
-{
-    if(m_resizeNode->scene()) {
-        m_resizeNode->scene()->removeItem(m_resizeNode);
-    }
-
-    if(scene()) {
-        scene()->addItem(m_resizeNode);
-    }
-
-    foreach(Bone *child, childBones()) {
-        child->addResizeNodesIntoScene();
-    }
-}
-
-void Bone::mapResizeNodesToScene() const
-{
-    qreal x = m_isJoint? DefaultJointWidth : DefaultBoneLength;
-    m_resizeNode->setPos(mapToScene(QPointF(x, 0)));
-    foreach(Bone *child, childBones()) {
-        child->mapResizeNodesToScene();
-    }
-}
-
 QRectF Bone::boundingRect() const
 {
     return m_isJoint? JointRect : BonePolygon.boundingRect();
-}
-
-ResizeNode *Bone::resizeNode() const
-{
-    return m_resizeNode;
 }

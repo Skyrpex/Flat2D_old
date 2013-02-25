@@ -4,7 +4,6 @@
 #include <QGraphicsPolygonItem>
 
 class Attachment;
-class ResizeNode;
 
 class Bone : public QGraphicsItem
 {
@@ -26,14 +25,9 @@ public:
     void setScaleFromLength(qreal length);
     void setScaleFromSceneLength(qreal sceneLength);
 
-    ResizeNode *resizeNode() const;
-    void addResizeNodesIntoScene() const;
-    void mapResizeNodesToScene() const;
-
     QRectF boundingRect() const;
 
 protected:
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
@@ -43,7 +37,6 @@ private:
 
     QString m_name;
 
-    ResizeNode *m_resizeNode;
     QList<Attachment *> m_attachments;
 
     qreal m_sceneRotation;

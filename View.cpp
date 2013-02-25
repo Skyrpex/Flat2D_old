@@ -2,7 +2,6 @@
 #include "Bone.hpp"
 #include "Attachment.hpp"
 #include "Application.hpp"
-#include "ResizeNode.hpp"
 #include <QKeyEvent>
 #include <QGraphicsItem>
 #include <QTimer>
@@ -27,7 +26,8 @@ View::View(QWidget *parent) :
     m_targetMode(BoneTargetMode),
     m_ellipseItem(new QGraphicsEllipseItem(-10, -10, 20, 20)),
     m_thickEllipseItem(new QGraphicsEllipseItem(-10, -10, 20, 20)),
-    m_lineItem(new QGraphicsLineItem)
+    m_lineItem(new QGraphicsLineItem),
+    m_solidLineItem(new QGraphicsLineItem)
 {
     setSceneRect(-512, -400, 1024, 800);
     setRenderHints(QPainter::Antialiasing);
@@ -51,9 +51,6 @@ View::View(QWidget *parent) :
     setTransformEditMode();
     setSelectTransformMode();
 
-    m_root->addResizeNodesIntoScene();
-
-
     m_circleItem = new QGraphicsEllipseItem(-10, -10, 20, 20);
     m_circleItem->setVisible(false);
     scene()->addItem(m_circleItem);
@@ -68,6 +65,10 @@ View::View(QWidget *parent) :
     m_lineItem->setPen(QPen(Qt::black, 0, Qt::DashLine));
     m_lineItem->setVisible(false);
     scene()->addItem(m_lineItem);
+
+    m_solidLineItem->setPen(QPen(Qt::black, 0, Qt::SolidLine));
+    m_solidLineItem->setVisible(false);
+    scene()->addItem(m_solidLineItem);
 
     //
     setViewportUpdateMode(NoViewportUpdate);
@@ -87,8 +88,6 @@ void View::setBoneTargetMode()
         bone->setFlag(QGraphicsItem::ItemIsMovable, true);
     }
 
-    setResizeNodesVisible(true);
-
     m_root->mapAttachmentsFromScene();
     foreach(Attachment *attachment, attachments()) {
         attachment->setOpacity(0.5);
@@ -100,13 +99,11 @@ void View::setAttachmentTargetMode()
 {
     m_targetMode = AttachmentTargetMode;
 
-    m_root->setOpacity(0.5);
+    m_root->setOpacity(0.75);
     foreach(Bone *bone, bones()) {
         bone->setFlag(QGraphicsItem::ItemIsSelectable, false);
         bone->setFlag(QGraphicsItem::ItemIsMovable, false);
     }
-
-    setResizeNodesVisible(false);
 
     foreach(Attachment *attachment, attachments()) {
         attachment->setOpacity(1);
@@ -137,13 +134,6 @@ void View::setCreateEditMode()
 void View::setSelectTransformMode()
 {
     m_transformMode = SelectTransformMode;
-
-    foreach(Bone *bone, bones()) {
-        bone->setFlag(QGraphicsItem::ItemIsMovable, true);
-    }
-    foreach(ResizeNode *resizeNode, resizeNodes()) {
-        resizeNode->setVisible(false);
-    }
 }
 
 void View::setTranslateTransformMode()
@@ -168,17 +158,10 @@ void View::setScaleTransformMode()
     m_transformMode = ScaleTransformMode;
 
     m_targetItem = targetItem(scene()->selectedItems());
-//    m_ellipseItem->setVisible(m_targetItem);
-//    if(m_targetItem) {
-//        m_thickEllipseItem->setPos(m_targetItem->scenePos());
-//        m_ellipseItem->setPos(m_targetItem->scenePos());
-//    }
-
-    foreach(Bone *bone, bones()) {
-        bone->setFlag(QGraphicsItem::ItemIsMovable, false);
-    }
-    foreach(ResizeNode *resizeNode, resizeNodes()) {
-        resizeNode->setVisible(true);
+    m_ellipseItem->setVisible(m_targetItem);
+    if(m_targetItem) {
+        m_thickEllipseItem->setPos(m_targetItem->scenePos());
+        m_ellipseItem->setPos(m_targetItem->scenePos());
     }
 }
 
@@ -235,6 +218,7 @@ void View::keyReleaseEvent(QKeyEvent *event)
     }
 
     m_ellipseItem->setVisible(false);
+    m_solidLineItem->setVisible(false);
 }
 
 void View::mousePressEvent(QMouseEvent *event)
@@ -258,17 +242,19 @@ void View::mousePressEvent(QMouseEvent *event)
             break;
 
         case RotateTransformMode: {
-            m_lineItem->setVisible(m_targetItem);
             if(m_targetItem) {
                 QLineF line(m_targetItem->scenePos(), mapToScene(event->pos()));
                 m_lineItem->setLine(line);
+                m_solidLineItem->setLine(line);
+
                 m_oldRotation = line.angle();
             }
+            m_lineItem->setVisible(m_targetItem);
+            m_solidLineItem->setVisible(m_targetItem);
             break;
         }
 
         case ScaleTransformMode: {
-            /*m_lineItem->setVisible(m_targetItem);
             if(m_targetItem) {
                 QLineF line(m_targetItem->scenePos(), mapToScene(event->pos()));
                 m_lineItem->setLine(line);
@@ -277,15 +263,8 @@ void View::mousePressEvent(QMouseEvent *event)
                 m_thickEllipseItem->setVisible(true);
                 qreal size = m_oldLength*2;
                 m_thickEllipseItem->setRect(-m_oldLength, -m_oldLength, size, size);
-            }*/
-
-
-//            QGraphicsView::mousePressEvent(event);
-
-            if(m_targetItem) {
-                QLineF line(m_targetItem->scenePos(), mapToScene(event->pos()));
-                m_oldLength = line.length();
             }
+            m_lineItem->setVisible(m_targetItem);
             break;
         }
         }
@@ -378,6 +357,7 @@ void View::mouseMoveEvent(QMouseEvent *event)
                 if(m_targetItem) {
                     QPointF scenePos = mapToScene(event->pos());
                     QLineF line(m_targetItem->scenePos(), scenePos);
+                    m_lineItem->setLine(line);
 
                     qreal factor = line.length() / m_oldLength;
 //                    qDebug() << factor;
@@ -419,7 +399,6 @@ void View::paintEvent(QPaintEvent *event)
     if(m_targetMode == BoneTargetMode) {
         m_root->mapAttachmentsToScene();
     }
-    m_root->mapResizeNodesToScene();
     QGraphicsView::paintEvent(event);
 }
 
@@ -512,30 +491,4 @@ QList<Attachment *> View::attachments() const
     }
 
     return attachments;
-}
-
-QList<ResizeNode *> View::resizeNodes() const
-{
-    QList<ResizeNode *> resizeNodes;
-
-    QStack<Bone *> bones;
-    bones << m_root;
-    while(!bones.isEmpty()) {
-        Bone *bone = bones.pop();
-
-        resizeNodes << bone->resizeNode();
-
-        foreach(Bone *child, bone->childBones()) {
-            bones.push(child);
-        }
-    }
-
-    return resizeNodes;
-}
-
-void View::setResizeNodesVisible(bool visible) const
-{
-    foreach(ResizeNode *resizeNode, resizeNodes()) {
-        resizeNode->setVisible(visible);
-    }
 }

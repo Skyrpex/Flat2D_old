@@ -56,8 +56,6 @@ private:
 
     QList<Bone *> bones() const;
     QList<Attachment *> attachments() const;
-    QList<ResizeNode *> resizeNodes() const;
-    void setResizeNodesVisible(bool visible) const;
 
     Bone *m_root;
 
@@ -76,6 +74,7 @@ private:
     QGraphicsEllipseItem *m_ellipseItem;
     QGraphicsEllipseItem *m_thickEllipseItem;
     QGraphicsLineItem *m_lineItem;
+    QGraphicsLineItem *m_solidLineItem;
 
     Bone *m_targetBone;
 };
