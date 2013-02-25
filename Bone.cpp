@@ -139,7 +139,7 @@ void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
     bool isSelected = option->state & QStyle::State_Selected;
     bool isMouseOver = option->state & QStyle::State_MouseOver;
-    painter->setBrush(isSelected? Qt::white : Qt::lightGray);
+    painter->setBrush(isSelected? Qt::white : Qt::gray);
     painter->setPen(QPen(Qt::black, 0));
 
     if(m_isJoint) {
