@@ -90,7 +90,7 @@ void View::setBoneTargetMode()
 
     m_root->mapAttachmentsFromScene();
     foreach(Attachment *attachment, attachments()) {
-        attachment->setOpacity(0.5);
+        attachment->setOpacity(0.6);
         attachment->setEnabled(false);
     }
 }
@@ -99,7 +99,7 @@ void View::setAttachmentTargetMode()
 {
     m_targetMode = AttachmentTargetMode;
 
-    m_root->setOpacity(0.75);
+    m_root->setOpacity(0.6);
     foreach(Bone *bone, bones()) {
         bone->setFlag(QGraphicsItem::ItemIsSelectable, false);
         bone->setFlag(QGraphicsItem::ItemIsMovable, false);
