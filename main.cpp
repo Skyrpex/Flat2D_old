@@ -1,11 +1,10 @@
 #include "Application.hpp"
-#include "View.hpp"
+#include "MainWindow.hpp"
 
 int main(int argc, char *argv[])
 {
     Application a(argc, argv);
-    View view;
-    view.resize(800, 600);
-    view.show();
+    MainWindow w;
+    w.show();
     return a.exec();
 }

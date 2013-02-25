@@ -116,6 +116,9 @@ void View::setTransformEditMode()
     m_editMode = TransformEditMode;
 
     setDragMode(RubberBandDrag);
+
+    m_ellipseItem->setVisible(false);
+    m_solidLineItem->setVisible(false);
 }
 
 void View::setCreateEditMode()
@@ -129,16 +132,26 @@ void View::setCreateEditMode()
     if(scene()->selectedItems().count() > 1) {
         scene()->clearSelection();
     }
+
+
+    m_ellipseItem->setVisible(false);
+    m_solidLineItem->setVisible(false);
 }
 
 void View::setSelectTransformMode()
 {
     m_transformMode = SelectTransformMode;
+
+    m_ellipseItem->setVisible(false);
+    m_solidLineItem->setVisible(false);
 }
 
 void View::setTranslateTransformMode()
 {
     m_transformMode = TranslateTransformMode;
+
+    m_ellipseItem->setVisible(false);
+    m_solidLineItem->setVisible(false);
 }
 
 void View::setRotateTransformMode()
@@ -151,6 +164,8 @@ void View::setRotateTransformMode()
     if(m_targetItem) {
         m_ellipseItem->setPos(m_targetItem->scenePos());
     }
+
+    m_solidLineItem->setVisible(false);
 }
 
 void View::setScaleTransformMode()
@@ -163,62 +178,8 @@ void View::setScaleTransformMode()
         m_thickEllipseItem->setPos(m_targetItem->scenePos());
         m_ellipseItem->setPos(m_targetItem->scenePos());
     }
-}
-
-void View::keyPressEvent(QKeyEvent *event)
-{
-    if(event->isAutoRepeat()) {
-        return;
-    }
-
-    if(event->modifiers() & Qt::ControlModifier) {
-        switch(event->key()) {
-        case TransformKey:
-            setTransformEditMode();
-            break;
-
-        case CreateKey:
-            setCreateEditMode();
-            break;
-        }
-    }
-    else {
-        if(m_editMode != CreateEditMode) {
-            switch(event->key()) {
-            case TranslateKey:
-                setTranslateTransformMode();
-                break;
-
-            case RotateKey:
-                setRotateTransformMode();
-                break;
-
-            case ScaleKey:
-                setScaleTransformMode();
-                break;
-            }
-        }
-    }
-}
-
-void View::keyReleaseEvent(QKeyEvent *event)
-{
-    if(event->isAutoRepeat()) {
-        return;
-    }
-
-    if(m_editMode != CreateEditMode) {
-        switch(event->key()) {
-        case TranslateKey:
-        case RotateKey:
-        case ScaleKey:
-            setSelectTransformMode();
-            break;
-        }
-    }
 
     m_ellipseItem->setVisible(false);
-    m_solidLineItem->setVisible(false);
 }
 
 void View::mousePressEvent(QMouseEvent *event)

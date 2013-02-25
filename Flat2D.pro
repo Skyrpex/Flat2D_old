@@ -10,13 +10,18 @@ SOURCES += main.cpp \
     Bone.cpp \
     View.cpp \
     Attachment.cpp \
-    Application.cpp
+    Application.cpp \
+    MainWindow.cpp
 
 HEADERS  += \
     Bone.hpp \
     View.hpp \
     Attachment.hpp \
-    Application.hpp
+    Application.hpp \
+    MainWindow.hpp
 
 RESOURCES += \
     images.qrc
+
+FORMS += \
+    MainWindow.ui
