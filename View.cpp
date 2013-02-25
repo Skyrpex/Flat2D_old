@@ -167,7 +167,7 @@ void View::setScaleTransformMode()
 {
     m_transformMode = ScaleTransformMode;
 
-//    m_targetItem = topLevelBone(scene()->selectedItems());
+    m_targetItem = targetItem(scene()->selectedItems());
 //    m_ellipseItem->setVisible(m_targetItem);
 //    if(m_targetItem) {
 //        m_thickEllipseItem->setPos(m_targetItem->scenePos());
@@ -278,7 +278,14 @@ void View::mousePressEvent(QMouseEvent *event)
                 qreal size = m_oldLength*2;
                 m_thickEllipseItem->setRect(-m_oldLength, -m_oldLength, size, size);
             }*/
-            QGraphicsView::mousePressEvent(event);
+
+
+//            QGraphicsView::mousePressEvent(event);
+
+            if(m_targetItem) {
+                QLineF line(m_targetItem->scenePos(), mapToScene(event->pos()));
+                m_oldLength = line.length();
+            }
             break;
         }
         }
@@ -356,7 +363,31 @@ void View::mouseMoveEvent(QMouseEvent *event)
             }
 
             case ScaleTransformMode: {
-                QGraphicsView::mouseMoveEvent(event);
+//                QGraphicsView::mouseMoveEvent(event);
+
+                /*QPointF scenePos = mapToScene(event->pos());
+                QPointF offset = scenePos - m_hotSpot;
+
+                foreach(QGraphicsItem *item, scene()->selectedItems()) {
+                    item->moveBy(offset.x(), offset.y());
+                }
+
+                m_hotSpot = scenePos;*/
+
+
+                if(m_targetItem) {
+                    QPointF scenePos = mapToScene(event->pos());
+                    QLineF line(m_targetItem->scenePos(), scenePos);
+
+                    qreal factor = line.length() / m_oldLength;
+//                    qDebug() << factor;
+
+                    foreach(QGraphicsItem *item, scene()->selectedItems()) {
+                        item->setScale(item->scale() * factor);
+                    }
+
+                    m_oldLength = line.length();
+                }
                 break;
             }
             }
