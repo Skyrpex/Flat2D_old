@@ -6,7 +6,7 @@ Attachment::Attachment(const QPixmap &pixmap)
     , m_localRotation(0)
     , m_localScale(1)
 {
-    setFlags(ItemIsMovable | ItemIsSelectable);
+    setFlags(ItemIsSelectable);
     setZValue(-1);
 }
 

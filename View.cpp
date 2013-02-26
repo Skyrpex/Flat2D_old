@@ -85,7 +85,6 @@ void View::setBoneTargetMode()
     m_root->setOpacity(1);
     foreach(Bone *bone, bones()) {
         bone->setFlag(QGraphicsItem::ItemIsSelectable, true);
-        bone->setFlag(QGraphicsItem::ItemIsMovable, true);
     }
 
     m_root->mapAttachmentsFromScene();
@@ -102,7 +101,6 @@ void View::setAttachmentTargetMode()
     m_root->setOpacity(0.6);
     foreach(Bone *bone, bones()) {
         bone->setFlag(QGraphicsItem::ItemIsSelectable, false);
-        bone->setFlag(QGraphicsItem::ItemIsMovable, false);
     }
 
     foreach(Attachment *attachment, attachments()) {
@@ -123,9 +121,10 @@ void View::setTransformEditMode()
 
 void View::setCreateEditMode()
 {
+    setSelectTransformMode();
+
     m_editMode = CreateEditMode;
 
-    setSelectTransformMode();
     setBoneTargetMode();
     setDragMode(NoDrag);
 
@@ -140,6 +139,8 @@ void View::setCreateEditMode()
 
 void View::setSelectTransformMode()
 {
+    setTransformEditMode();
+
     m_transformMode = SelectTransformMode;
 
     m_ellipseItem->setVisible(false);
@@ -148,6 +149,8 @@ void View::setSelectTransformMode()
 
 void View::setTranslateTransformMode()
 {
+    setTransformEditMode();
+
     m_transformMode = TranslateTransformMode;
 
     m_ellipseItem->setVisible(false);
@@ -156,6 +159,8 @@ void View::setTranslateTransformMode()
 
 void View::setRotateTransformMode()
 {
+    setTransformEditMode();
+
     m_transformMode = RotateTransformMode;
 
     m_targetItem = targetItem(scene()->selectedItems());
@@ -170,6 +175,8 @@ void View::setRotateTransformMode()
 
 void View::setScaleTransformMode()
 {
+    setTransformEditMode();
+
     m_transformMode = ScaleTransformMode;
 
     m_targetItem = targetItem(scene()->selectedItems());

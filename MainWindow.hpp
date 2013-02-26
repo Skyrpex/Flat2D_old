@@ -7,6 +7,8 @@ namespace Ui {
 class MainWindow;
 }
 
+class QActionGroup;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -14,9 +16,17 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+public slots:
+    void setCreateMode();
+    void setTransformMode();
+
+protected:
+    void keyReleaseEvent(QKeyEvent *event);
     
 private:
     Ui::MainWindow *ui;
+    QActionGroup *m_transformGroup;
 };
 
 #endif // MAINWINDOW_HPP

@@ -62,6 +62,7 @@
    <addaction name="actionCreate"/>
    <addaction name="actionTransform"/>
    <addaction name="separator"/>
+   <addaction name="actionSelect"/>
    <addaction name="actionRotate"/>
    <addaction name="actionTranslate"/>
    <addaction name="actionScale"/>
@@ -76,6 +77,9 @@
    <property name="toolTip">
     <string>Transform</string>
    </property>
+   <property name="shortcut">
+    <string>2</string>
+   </property>
   </action>
   <action name="actionRotate">
    <property name="checkable">
@@ -83,6 +87,9 @@
    </property>
    <property name="text">
     <string>Rotate</string>
+   </property>
+   <property name="shortcut">
+    <string>R</string>
    </property>
   </action>
   <action name="actionTranslate">
@@ -92,6 +99,9 @@
    <property name="text">
     <string>Translate</string>
    </property>
+   <property name="shortcut">
+    <string>T</string>
+   </property>
   </action>
   <action name="actionScale">
    <property name="checkable">
@@ -100,6 +110,9 @@
    <property name="text">
     <string>Scale</string>
    </property>
+   <property name="shortcut">
+    <string>S</string>
+   </property>
   </action>
   <action name="actionCreate">
    <property name="checkable">
@@ -107,6 +120,17 @@
    </property>
    <property name="text">
     <string>Create</string>
+   </property>
+   <property name="shortcut">
+    <string>1</string>
+   </property>
+  </action>
+  <action name="actionSelect">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Select</string>
    </property>
   </action>
  </widget>
@@ -121,6 +145,7 @@
     <slot>setTranslateTransformMode()</slot>
     <slot>setScaleTransformMode()</slot>
     <slot>setCreateEditMode()</slot>
+    <slot>setSelectTransformMode()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -129,8 +154,8 @@
   <connection>
    <sender>actionCreate</sender>
    <signal>triggered()</signal>
-   <receiver>graphicsView</receiver>
-   <slot>setCreateEditMode()</slot>
+   <receiver>MainWindow</receiver>
+   <slot>setCreateMode()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -138,7 +163,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
-     <y>311</y>
+     <y>299</y>
     </hint>
    </hints>
   </connection>
@@ -177,8 +202,8 @@
   <connection>
    <sender>actionTransform</sender>
    <signal>triggered()</signal>
-   <receiver>graphicsView</receiver>
-   <slot>setTransformEditMode()</slot>
+   <receiver>MainWindow</receiver>
+   <slot>setTransformMode()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -186,7 +211,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>399</x>
-     <y>311</y>
+     <y>299</y>
     </hint>
    </hints>
   </connection>
@@ -206,5 +231,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionSelect</sender>
+   <signal>triggered()</signal>
+   <receiver>graphicsView</receiver>
+   <slot>setSelectTransformMode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>311</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>setCreateMode()</slot>
+  <slot>setTransformMode()</slot>
+ </slots>
 </ui>
