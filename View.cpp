@@ -144,6 +144,10 @@ void View::setCreateEditMode()
 
 void View::setSelectTransformMode()
 {
+    if(m_transformMode == SelectTransformMode) {
+        return;
+    }
+
     setTransformEditMode();
 
     m_transformMode = SelectTransformMode;
@@ -155,6 +159,10 @@ void View::setSelectTransformMode()
 
 void View::setRotateTransformMode()
 {
+    if(m_transformMode == RotateTransformMode) {
+        return;
+    }
+
     setTransformEditMode();
 
     m_transformMode = RotateTransformMode;
@@ -175,6 +183,10 @@ void View::setRotateTransformMode()
 
 void View::setScaleTransformMode()
 {
+    if(m_transformMode == ScaleTransformMode) {
+        return;
+    }
+
     setTransformEditMode();
 
     m_transformMode = ScaleTransformMode;
@@ -217,35 +229,27 @@ void View::keyPressEvent(QKeyEvent *event)
     QGraphicsView::keyPressEvent(event);
 }
 
-void View::keyReleaseEvent(QKeyEvent *event)
-{
-    if(!event->isAutoRepeat() && m_editMode == TransformEditMode) {
-        switch(event->key()) {
-        case RotateKey:
-        case ScaleKey:
-            setSelectTransformMode();
-            break;
-
-        default:
-            break;
-        }
-    }
-
-    QGraphicsView::keyReleaseEvent(event);
-}
-
 void View::mousePressEvent(QMouseEvent *event)
 {
-    if(m_editMode == TransformEditMode
-            && m_transformMode == SelectTransformMode) {
-        QGraphicsItem *item = itemAt(event->pos());
-        if(m_targetMode == BoneTargetMode && dynamic_cast<Attachment *>(item)) {
-            setAttachmentTargetMode();
+    if(m_editMode == TransformEditMode) {
+        switch(m_transformMode) {
+        case SelectTransformMode: {
+            QGraphicsItem *item = itemAt(event->pos());
+            if(m_targetMode == BoneTargetMode && dynamic_cast<Attachment *>(item)) {
+                setAttachmentTargetMode();
+            }
+            else if(m_targetMode == AttachmentTargetMode && dynamic_cast<Bone *>(item)) {
+                setBoneTargetMode();
+            }
+            QGraphicsView::mousePressEvent(event);
+            break;
         }
-        else if(m_targetMode == AttachmentTargetMode && dynamic_cast<Bone *>(item)) {
-            setBoneTargetMode();
+
+        case RotateTransformMode:
+        case ScaleTransformMode:
+            setSelectTransformMode();
+            break;
         }
-        QGraphicsView::mousePressEvent(event);
     }
     else if(m_editMode == CreateEditMode) {
         QGraphicsItem *item = itemAt(event->pos());
