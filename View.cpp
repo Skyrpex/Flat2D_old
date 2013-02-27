@@ -8,6 +8,9 @@
 #include <QStack>
 #include <QDebug>
 
+// Update interval: 60 fps
+static const int UpdateInterval = 1000 / 60;
+
 static const char * const SelectEditModeText = "Select mode";
 static const char * const TranslateEditModeText = "Translate mode";
 static const char * const RotateEditModeText = "Rotate mode";
@@ -75,7 +78,7 @@ View::View(QWidget *parent) :
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), viewport(), SLOT(update()));
-    timer->start(1.0/60.0);
+    timer->start(UpdateInterval);
 }
 
 void View::setBoneTargetMode()
