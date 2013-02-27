@@ -24,7 +24,7 @@ Bone::Bone(const QString &name, Bone *parent)
                     << QPointF(DefaultBoneLength, 0)
                     << QPointF(10, -5);
     }
-    setFlags(ItemIsSelectable | ItemIsPanel);
+    setFlags(ItemIsSelectable | ItemIsMovable | ItemIsPanel);
     setAcceptHoverEvents(true);
 }
 

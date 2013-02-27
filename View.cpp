@@ -85,6 +85,7 @@ void View::setBoneTargetMode()
     m_root->setOpacity(1);
     foreach(Bone *bone, bones()) {
         bone->setFlag(QGraphicsItem::ItemIsSelectable, true);
+        bone->setFlag(QGraphicsItem::ItemIsMovable, true);
     }
 
     m_root->mapAttachmentsFromScene();
@@ -101,6 +102,7 @@ void View::setAttachmentTargetMode()
     m_root->setOpacity(0.6);
     foreach(Bone *bone, bones()) {
         bone->setFlag(QGraphicsItem::ItemIsSelectable, false);
+        bone->setFlag(QGraphicsItem::ItemIsMovable, false);
     }
 
     foreach(Attachment *attachment, attachments()) {
@@ -193,9 +195,9 @@ void View::keyPressEvent(QKeyEvent *event)
 {
     if(m_editMode == TransformEditMode) {
         switch(event->key()) {
-        case TranslateKey:
-            setTranslateTransformMode();
-            break;
+//        case TranslateKey:
+//            setTranslateTransformMode();
+//            break;
 
         case RotateKey:
             setRotateTransformMode();
@@ -215,7 +217,7 @@ void View::keyReleaseEvent(QKeyEvent *event)
 {
     if(m_editMode == TransformEditMode) {
         switch(event->key()) {
-        case TranslateKey:
+//        case TranslateKey:
         case RotateKey:
         case ScaleKey:
             setSelectTransformMode();
