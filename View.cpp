@@ -189,6 +189,44 @@ void View::setScaleTransformMode()
     m_ellipseItem->setVisible(false);
 }
 
+void View::keyPressEvent(QKeyEvent *event)
+{
+    if(m_editMode == TransformEditMode) {
+        switch(event->key()) {
+        case TranslateKey:
+            setTranslateTransformMode();
+            break;
+
+        case RotateKey:
+            setRotateTransformMode();
+            break;
+
+        case ScaleKey:
+            setScaleTransformMode();
+            break;
+
+        default:
+            break;
+        }
+    }
+}
+
+void View::keyReleaseEvent(QKeyEvent *event)
+{
+    if(m_editMode == TransformEditMode) {
+        switch(event->key()) {
+        case TranslateKey:
+        case RotateKey:
+        case ScaleKey:
+            setSelectTransformMode();
+            break;
+
+        default:
+            break;
+        }
+    }
+}
+
 void View::mousePressEvent(QMouseEvent *event)
 {
     if(m_editMode == TransformEditMode) {

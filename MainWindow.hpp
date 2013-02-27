@@ -20,13 +20,9 @@ public:
 public slots:
     void setCreateMode();
     void setTransformMode();
-
-protected:
-    void keyReleaseEvent(QKeyEvent *event);
     
 private:
     Ui::MainWindow *ui;
-    QActionGroup *m_transformGroup;
 };
 
 #endif // MAINWINDOW_HPP
