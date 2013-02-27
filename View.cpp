@@ -148,16 +148,7 @@ void View::setSelectTransformMode()
 
     m_transformMode = SelectTransformMode;
 
-    m_ellipseItem->setVisible(false);
-    m_solidLineItem->setVisible(false);
-}
-
-void View::setTranslateTransformMode()
-{
-    setTransformEditMode();
-
-    m_transformMode = TranslateTransformMode;
-
+    m_lineItem->setVisible(false);
     m_ellipseItem->setVisible(false);
     m_solidLineItem->setVisible(false);
 }
@@ -169,13 +160,17 @@ void View::setRotateTransformMode()
     m_transformMode = RotateTransformMode;
 
     m_targetItem = targetItem(scene()->selectedItems());
-
-    m_ellipseItem->setVisible(m_targetItem);
     if(m_targetItem) {
         m_ellipseItem->setPos(m_targetItem->scenePos());
+
+        QLineF line(m_targetItem->scenePos(), cursorScenePos());
+        m_lineItem->setLine(line);
+
+        m_oldRotation = line.angle();
     }
 
-    m_solidLineItem->setVisible(false);
+//    m_ellipseItem->setVisible(m_targetItem);
+    m_lineItem->setVisible(m_targetItem);
 }
 
 void View::setScaleTransformMode()
@@ -185,23 +180,27 @@ void View::setScaleTransformMode()
     m_transformMode = ScaleTransformMode;
 
     m_targetItem = targetItem(scene()->selectedItems());
-    m_ellipseItem->setVisible(m_targetItem);
     if(m_targetItem) {
         m_thickEllipseItem->setPos(m_targetItem->scenePos());
         m_ellipseItem->setPos(m_targetItem->scenePos());
+
+        QLineF line(m_targetItem->scenePos(), cursorScenePos());
+        m_lineItem->setLine(line);
+        m_oldLength = line.length();
+
+        qreal size = m_oldLength*2;
+        m_thickEllipseItem->setRect(-m_oldLength, -m_oldLength, size, size);
     }
 
-    m_ellipseItem->setVisible(false);
+//    m_ellipseItem->setVisible(false);
+    m_lineItem->setVisible(m_targetItem);
+//    m_thickEllipseItem->setVisible(m_targetItem);
 }
 
 void View::keyPressEvent(QKeyEvent *event)
 {
-    if(m_editMode == TransformEditMode) {
+    if(!event->isAutoRepeat() && m_editMode == TransformEditMode) {
         switch(event->key()) {
-//        case TranslateKey:
-//            setTranslateTransformMode();
-//            break;
-
         case RotateKey:
             setRotateTransformMode();
             break;
@@ -214,13 +213,14 @@ void View::keyPressEvent(QKeyEvent *event)
             break;
         }
     }
+
+    QGraphicsView::keyPressEvent(event);
 }
 
 void View::keyReleaseEvent(QKeyEvent *event)
 {
-    if(m_editMode == TransformEditMode) {
+    if(!event->isAutoRepeat() && m_editMode == TransformEditMode) {
         switch(event->key()) {
-//        case TranslateKey:
         case RotateKey:
         case ScaleKey:
             setSelectTransformMode();
@@ -230,55 +230,22 @@ void View::keyReleaseEvent(QKeyEvent *event)
             break;
         }
     }
+
+    QGraphicsView::keyReleaseEvent(event);
 }
 
 void View::mousePressEvent(QMouseEvent *event)
 {
-    if(m_editMode == TransformEditMode) {
-        switch(m_transformMode) {
-        case SelectTransformMode:  {
-            QGraphicsItem *item = itemAt(event->pos());
-            if(m_targetMode == BoneTargetMode && dynamic_cast<Attachment *>(item)) {
-                setAttachmentTargetMode();
-            }
-            else if(m_targetMode == AttachmentTargetMode && dynamic_cast<Bone *>(item)) {
-                setBoneTargetMode();
-            }
-            QGraphicsView::mousePressEvent(event);
-            break;
+    if(m_editMode == TransformEditMode
+            && m_transformMode == SelectTransformMode) {
+        QGraphicsItem *item = itemAt(event->pos());
+        if(m_targetMode == BoneTargetMode && dynamic_cast<Attachment *>(item)) {
+            setAttachmentTargetMode();
         }
-
-        case TranslateTransformMode:
-            m_hotSpot = mapToScene(event->pos());
-            break;
-
-        case RotateTransformMode: {
-            if(m_targetItem) {
-                QLineF line(m_targetItem->scenePos(), mapToScene(event->pos()));
-                m_lineItem->setLine(line);
-                m_solidLineItem->setLine(line);
-
-                m_oldRotation = line.angle();
-            }
-            m_lineItem->setVisible(m_targetItem);
-            m_solidLineItem->setVisible(m_targetItem);
-            break;
+        else if(m_targetMode == AttachmentTargetMode && dynamic_cast<Bone *>(item)) {
+            setBoneTargetMode();
         }
-
-        case ScaleTransformMode: {
-            if(m_targetItem) {
-                QLineF line(m_targetItem->scenePos(), mapToScene(event->pos()));
-                m_lineItem->setLine(line);
-                m_oldLength = line.length();
-
-                m_thickEllipseItem->setVisible(true);
-                qreal size = m_oldLength*2;
-                m_thickEllipseItem->setRect(-m_oldLength, -m_oldLength, size, size);
-            }
-            m_lineItem->setVisible(m_targetItem);
-            break;
-        }
-        }
+        QGraphicsView::mousePressEvent(event);
     }
     else if(m_editMode == CreateEditMode) {
         QGraphicsItem *item = itemAt(event->pos());
@@ -316,72 +283,47 @@ void View::mousePressEvent(QMouseEvent *event)
 void View::mouseMoveEvent(QMouseEvent *event)
 {
     if(m_editMode == TransformEditMode) {
-        if(event->buttons() & Qt::LeftButton) {
-            switch(m_transformMode) {
-            case SelectTransformMode:
+        switch(m_transformMode) {
+        case SelectTransformMode: {
+            if(event->buttons() & Qt::LeftButton) {
                 QGraphicsView::mouseMoveEvent(event);
-                break;
+            }
+            break;
+        }
 
-            case TranslateTransformMode: {
+        case RotateTransformMode: {
+            if(m_targetItem) {
                 QPointF scenePos = mapToScene(event->pos());
-                QPointF offset = scenePos - m_hotSpot;
+                QLineF line(m_targetItem->scenePos(), scenePos);
+                m_lineItem->setLine(line);
 
+                qreal offset = m_oldRotation - line.angle();
+
+                QList<QGraphicsItem*> selectedItems = scene()->selectedItems();
+                foreach(QGraphicsItem *item, selectedItems) {
+                    item->setRotation(item->rotation() + offset);
+                }
+
+                m_oldRotation = line.angle();
+            }
+            break;
+        }
+
+        case ScaleTransformMode: {
+            if(m_targetItem) {
+                QPointF scenePos = mapToScene(event->pos());
+                QLineF line(m_targetItem->scenePos(), scenePos);
+                m_lineItem->setLine(line);
+
+                qreal factor = line.length() / m_oldLength;
                 foreach(QGraphicsItem *item, scene()->selectedItems()) {
-                    item->moveBy(offset.x(), offset.y());
+                    item->setScale(item->scale() * factor);
                 }
 
-                m_hotSpot = scenePos;
-                break;
+                m_oldLength = line.length();
             }
-
-            case RotateTransformMode: {
-                if(m_targetItem) {
-                    QPointF scenePos = mapToScene(event->pos());
-                    QLineF line(m_targetItem->scenePos(), scenePos);
-                    m_lineItem->setLine(line);
-
-                    qreal offset = m_oldRotation - line.angle();
-
-                    QList<QGraphicsItem*> selectedItems = scene()->selectedItems();
-                    foreach(QGraphicsItem *item, selectedItems) {
-                        item->setRotation(item->rotation() + offset);
-                    }
-
-                    m_oldRotation = line.angle();
-                }
-                break;
-            }
-
-            case ScaleTransformMode: {
-//                QGraphicsView::mouseMoveEvent(event);
-
-                /*QPointF scenePos = mapToScene(event->pos());
-                QPointF offset = scenePos - m_hotSpot;
-
-                foreach(QGraphicsItem *item, scene()->selectedItems()) {
-                    item->moveBy(offset.x(), offset.y());
-                }
-
-                m_hotSpot = scenePos;*/
-
-
-                if(m_targetItem) {
-                    QPointF scenePos = mapToScene(event->pos());
-                    QLineF line(m_targetItem->scenePos(), scenePos);
-                    m_lineItem->setLine(line);
-
-                    qreal factor = line.length() / m_oldLength;
-//                    qDebug() << factor;
-
-                    foreach(QGraphicsItem *item, scene()->selectedItems()) {
-                        item->setScale(item->scale() * factor);
-                    }
-
-                    m_oldLength = line.length();
-                }
-                break;
-            }
-            }
+            break;
+        }
         }
     }
     else {
@@ -458,11 +400,15 @@ QGraphicsItem *View::targetItem(const QList<QGraphicsItem *> &items) const
 {
     QGraphicsItem *item = topLevelBone(items);
     if(!item) {
-        QPointF scenePos = mapToScene(mapFromGlobal(QCursor::pos()));
-        item = nearestItem(scenePos, items);
+        item = nearestItem(cursorScenePos(), items);
     }
 
     return item;
+}
+
+QPointF View::cursorScenePos() const
+{
+    return mapToScene(mapFromGlobal(QCursor::pos()));
 }
 
 QList<Bone *> View::bones() const

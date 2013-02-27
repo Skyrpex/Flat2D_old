@@ -23,7 +23,6 @@ public:
 
     enum TransformMode {
         SelectTransformMode,
-        TranslateTransformMode,
         RotateTransformMode,
         ScaleTransformMode
     };
@@ -38,7 +37,6 @@ public slots:
     void setCreateEditMode();
 
     void setSelectTransformMode();
-    void setTranslateTransformMode();
     void setRotateTransformMode();
     void setScaleTransformMode();
 
@@ -54,6 +52,7 @@ private:
     Bone *topLevelBone(const QList<QGraphicsItem *> &items) const;
     QGraphicsItem *nearestItem(const QPointF &scenePos, const QList<QGraphicsItem *> &items) const;
     QGraphicsItem *targetItem(const QList<QGraphicsItem *> &items) const;
+    QPointF cursorScenePos() const;
 
     QList<Bone *> bones() const;
     QList<Attachment *> attachments() const;
