@@ -11,8 +11,13 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->menuEdit->addAction(qApp->undoStack()->createUndoAction(this));
-    ui->menuEdit->addAction(qApp->undoStack()->createRedoAction(this));
+    QAction *undoAction = qApp->undoStack()->createUndoAction(this);
+    undoAction->setShortcut(QKeySequence("Ctrl+Z"));
+    ui->menuEdit->addAction(undoAction);
+
+    QAction *redoAction = qApp->undoStack()->createRedoAction(this);
+    redoAction->setShortcut(QKeySequence("Ctrl+Y"));
+    ui->menuEdit->addAction(redoAction);
 
     {
         QActionGroup *group = new QActionGroup(this);
