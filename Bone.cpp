@@ -6,6 +6,7 @@
 #include <QPainter>
 
 static const qreal DefaultBoneLength = 80.0;
+static const qreal DefaultBoneHeight = 5.0;
 static QPolygonF BonePolygon;
 
 static const qreal DefaultJointWidth = 10;
@@ -142,7 +143,7 @@ void Bone::setScaleFromSceneLength(qreal sceneLength)
 
 void Bone::setBoneLength(qreal length)
 {
-    setJoint(length < 10);
+    setJoint(length < DefaultJointWidth);
 
     if(!m_isJoint) {
         prepareGeometryChange();
@@ -176,7 +177,7 @@ void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 //    painter->setPen(QPen(Qt::lightGray, 0));
 
     if(m_isJoint) {
-        painter->drawRect(JointRect);
+        painter->drawEllipse(JointRect);
     }
     else {
         painter->drawPolygon(bonePolygon());
@@ -197,12 +198,18 @@ void Bone::setJoint(bool isJoint)
     m_isJoint = isJoint;
 }
 
+#include <math.h>
 QPolygonF Bone::bonePolygon() const
 {
+    qreal height = 0.9*DefaultBoneHeight*log(0.7 * (m_boneLength*DefaultBoneHeight) / DefaultBoneLength);
+    height = qMax(height, DefaultBoneHeight);
+
+    qreal offset = m_boneLength / 8.0;
+    offset = qMin(offset, 10.0);
     return QPolygonF() << QPointF(0, 0)
-                       << QPointF(10, 5)
+                       << QPointF(offset, height)
                        << QPointF(m_boneLength, 0)
-                       << QPointF(10, -5);
+                       << QPointF(offset, -height);
 }
 
 QRectF Bone::boundingRect() const
