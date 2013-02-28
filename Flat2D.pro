@@ -5,6 +5,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Flat2D
 TEMPLATE = app
 
+include(qt-manhattan-style/qt-manhattan-style.pri)
 
 SOURCES += main.cpp \
     Bone.cpp \

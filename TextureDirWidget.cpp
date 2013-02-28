@@ -1,21 +1,24 @@
 #include "TextureDirWidget.hpp"
 #include "TextureIconProvider.hpp"
-#include <QToolBar>
+#include <styledbar.h>
 //#include <QActionGroup>
 #include <QLabel>
+#include <QToolBar>
 #include <QTreeView>
 #include <QFileSystemModel>
 #include <QDebug>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 
 //static const int SmallSize = 0;
 //static const int MediumSize = 32;
 //static const int BigSize = 64;
 static const QSize IconSize(64, 64);
+static const char LabelText[] = "Texture directory";
 
 TextureDirWidget::TextureDirWidget(QWidget *parent) :
     QWidget(parent),
-    m_toolBar(new QToolBar),
+    m_toolBar(new Manhattan::StyledBar),
     m_view(new QTreeView),
     m_model(new QFileSystemModel)
 {
@@ -35,7 +38,15 @@ TextureDirWidget::TextureDirWidget(QWidget *parent) :
 //    group->addAction(small);
 //    group->addAction(medium);
 //    group->addAction(big);
-    m_toolBar->addWidget(new QLabel(tr("Hola")));
+
+//    m_toolBar->setSingleRow(false);
+    {
+        QHBoxLayout *layout = new QHBoxLayout(m_toolBar);
+        layout->setMargin(0);
+        layout->setSpacing(4);
+        layout->setContentsMargins(5, 0, 0, 0);
+        layout->addWidget(new QLabel(tr(LabelText)));
+    }
 
     connect(m_model, SIGNAL(directoryLoaded(QString)), m_view, SLOT(expandAll()));
     m_model->setRootPath(QDir::currentPath());
@@ -52,6 +63,7 @@ TextureDirWidget::TextureDirWidget(QWidget *parent) :
     for(int i = 1; i < m_model->columnCount(); ++i) {
         m_view->setColumnHidden(i, true);
     }
+    m_view->setStyleSheet("QTreeView { border: 0; }");
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(0);

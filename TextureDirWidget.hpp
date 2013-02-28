@@ -3,7 +3,9 @@
 
 #include <QWidget>
 
-class QToolBar;
+namespace Manhattan {
+class StyledBar;
+}
 class QTreeView;
 class QFileSystemModel;
 
@@ -17,7 +19,7 @@ public:
 private:
     QStringList nameFilters() const;
 
-    QToolBar *m_toolBar;
+    Manhattan::StyledBar *m_toolBar;
     QTreeView *m_view;
     QFileSystemModel *m_model;
 };

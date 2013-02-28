@@ -1,0 +1,3 @@
+[submodule "qt-manhattan-style"]
+	path = qt-manhattan-style
+	url = git://github.com/Skyrpex/qt-manhattan-style.git

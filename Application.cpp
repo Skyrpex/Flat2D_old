@@ -1,5 +1,7 @@
 #include "Application.hpp"
 #include <QUndoStack>
+#include <stylehelper.h>
+#include <manhattanstyle.h>
 
 Application::Application(int argc, char **argv) :
     QApplication(argc, argv),
@@ -8,6 +10,9 @@ Application::Application(int argc, char **argv) :
     setOrganizationName("Remacu");
     setApplicationName("Flat2D");
     setApplicationVersion("Alpha");
+
+    Manhattan::Utils::StyleHelper::setBaseColor(Qt::darkGray);
+    setStyle(new ManhattanStyle("Manhattan"));
 }
 
 QUndoStack *Application::undoStack() const

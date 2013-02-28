@@ -43,6 +43,7 @@ View::View(QWidget *parent) :
     setSceneRect(-512, -400, 1024, 800);
     setRenderHints(QPainter::Antialiasing);
     setBackgroundBrush(Qt::darkGray);
+    setStyleSheet("QGraphicsView { border: 0; }");
 
 
     Bone *bone = new Bone("Bone 2", m_root);
