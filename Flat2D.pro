@@ -16,7 +16,9 @@ SOURCES += main.cpp \
     commands/ScaleCommand.cpp \
     commands/TranslateCommand.cpp \
     commands/CreateCommand.cpp \
-    commands/SelectionCommand.cpp
+    commands/SelectionCommand.cpp \
+    TextureDirWidget.cpp \
+    TextureIconProvider.cpp
 
 HEADERS  += \
     Bone.hpp \
@@ -28,10 +30,13 @@ HEADERS  += \
     commands/ScaleCommand.hpp \
     commands/TranslateCommand.hpp \
     commands/CreateCommand.hpp \
-    commands/SelectionCommand.hpp
+    commands/SelectionCommand.hpp \
+    TextureDirWidget.hpp \
+    TextureIconProvider.hpp
 
 RESOURCES += \
     images.qrc
 
 FORMS += \
-    MainWindow.ui
+    MainWindow.ui \
+    TextureDirWidget.ui
