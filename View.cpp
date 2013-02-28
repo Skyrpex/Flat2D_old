@@ -9,6 +9,7 @@
 #include <QDebug>
 #include "commands/RotateCommand.hpp"
 #include "commands/ScaleCommand.hpp"
+#include "commands/TranslateCommand.hpp"
 
 // Update interval: 60 fps
 static const int UpdateInterval = 1000 / 60;
@@ -255,6 +256,13 @@ void View::mousePressEvent(QMouseEvent *event)
                 setBoneTargetMode();
             }
             QGraphicsView::mousePressEvent(event);
+
+            m_hasTranslated = false;
+            m_translationBackup.clear();
+            foreach(QGraphicsItem *item, scene()->selectedItems()) {
+                m_translationBackup.insert(item, item->pos());
+            }
+
             break;
         }
 
@@ -307,6 +315,7 @@ void View::mouseMoveEvent(QMouseEvent *event)
         case SelectTransformMode: {
             if(event->buttons() & Qt::LeftButton) {
                 QGraphicsView::mouseMoveEvent(event);
+                m_hasTranslated = true;
             }
             break;
         }
@@ -365,6 +374,8 @@ void View::mouseReleaseEvent(QMouseEvent *event)
     m_lineItem->setVisible(false);
     m_thickEllipseItem->setVisible(false);
     QGraphicsView::mouseReleaseEvent(event);
+
+    commitTranslation();
 }
 
 void View::paintEvent(QPaintEvent *event)
@@ -502,4 +513,23 @@ void View::commitScale()
     m_scaleBackup.clear();
 
     setSelectTransformMode();
+}
+
+void View::commitTranslation()
+{
+    if(m_translationBackup.isEmpty() || !m_hasTranslated) {
+        return;
+    }
+
+    qApp->undoStack()->beginMacro("Translate");
+    QMapIterator<QGraphicsItem *, QPointF> it(m_translationBackup);
+    while(it.hasNext()) {
+        it.next();
+        QGraphicsItem *item = it.key();
+        QPointF oldPos = it.value();
+        QPointF newPos = item->pos();
+        qApp->undoStack()->push(new TranslateCommand(item, oldPos, newPos));
+    }
+    qApp->undoStack()->endMacro();
+    m_translationBackup.clear();
 }

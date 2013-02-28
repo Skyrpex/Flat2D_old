@@ -59,6 +59,7 @@ private:
 
     void commitRotation();
     void commitScale();
+    void commitTranslation();
 
     Bone *m_root;
 
@@ -83,6 +84,8 @@ private:
 
     QMap<QGraphicsItem *, qreal> m_rotationBackup;
     QMap<QGraphicsItem *, qreal> m_scaleBackup;
+    QMap<QGraphicsItem *, QPointF> m_translationBackup;
+    bool m_hasTranslated;
 };
 
 #endif // VIEW_HPP
