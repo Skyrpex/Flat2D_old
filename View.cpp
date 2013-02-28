@@ -373,7 +373,7 @@ void View::mouseMoveEvent(QMouseEvent *event)
 
                 m_targetBone->setSceneRotation(-line.angle());
 
-                m_targetBone->setScaleFromSceneLength(line.length());
+                m_targetBone->setBoneSceneLength(line.length());
             }
         }
     }

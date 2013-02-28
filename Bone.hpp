@@ -25,6 +25,9 @@ public:
     void setScaleFromLength(qreal length);
     void setScaleFromSceneLength(qreal sceneLength);
 
+    void setBoneLength(qreal length);
+    void setBoneSceneLength(qreal sceneLength);
+
     QRectF boundingRect() const;
 //    QPainterPath shape() const;
 
@@ -33,6 +36,7 @@ protected:
 
 private:
     void setJoint(bool isJoint);
+    QPolygonF bonePolygon() const;
 
     bool m_isJoint;
 
@@ -42,6 +46,8 @@ private:
 
     qreal m_sceneRotation;
     qreal m_sceneScale;
+
+    qreal m_boneLength;
 };
 
 #endif // BONE_HPP

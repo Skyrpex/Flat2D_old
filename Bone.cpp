@@ -17,11 +17,12 @@ Bone::Bone(const QString &name, Bone *parent)
     , m_name(name)
     , m_sceneRotation(0)
     , m_sceneScale(1)
+    , m_boneLength(DefaultBoneLength)
 {
     if(BonePolygon.isEmpty()) {
         BonePolygon << QPointF(0, 0)
                     << QPointF(10, 5)
-                    << QPointF(DefaultBoneLength, 0)
+                    << QPointF(m_boneLength, 0)
                     << QPointF(10, -5);
     }
     setFlags(ItemIsSelectable | ItemIsMovable | ItemIsPanel);
@@ -130,6 +131,25 @@ void Bone::setScaleFromSceneLength(qreal sceneLength)
     setScaleFromLength(sceneLength);
 }
 
+void Bone::setBoneLength(qreal length)
+{
+    setJoint(length < 10);
+
+    if(!m_isJoint) {
+        prepareGeometryChange();
+    }
+    m_boneLength = length;
+}
+
+void Bone::setBoneSceneLength(qreal sceneLength)
+{
+    Bone *parent = parentBone();
+    if(parent) {
+        sceneLength /= parent->m_sceneScale;
+    }
+    setBoneLength(sceneLength);
+}
+
 void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 //    qDebug() << option->state;
@@ -150,7 +170,7 @@ void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         painter->drawRect(JointRect);
     }
     else {
-        painter->drawPolygon(BonePolygon);
+        painter->drawPolygon(bonePolygon());
     }
 
 //    painter->setPen(QPen(Qt::black, 0));
@@ -168,9 +188,17 @@ void Bone::setJoint(bool isJoint)
     m_isJoint = isJoint;
 }
 
+QPolygonF Bone::bonePolygon() const
+{
+    return QPolygonF() << QPointF(0, 0)
+                       << QPointF(10, 5)
+                       << QPointF(m_boneLength, 0)
+                       << QPointF(10, -5);
+}
+
 QRectF Bone::boundingRect() const
 {
-    return m_isJoint? JointRect : BonePolygon.boundingRect();
+    return m_isJoint? JointRect : bonePolygon().boundingRect();
 }
 
 //QPainterPath Bone::shape() const
