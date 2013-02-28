@@ -2,6 +2,7 @@
 #define VIEW_HPP
 
 #include <QGraphicsView>
+#include <QMap>
 
 class Bone;
 class Attachment;
@@ -76,6 +77,8 @@ private:
     QGraphicsLineItem *m_solidLineItem;
 
     Bone *m_targetBone;
+
+    QMap<QGraphicsItem *, qreal> m_backupValues;
 };
 
 #endif // VIEW_HPP

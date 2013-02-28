@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QStack>
 #include <QDebug>
+#include "commands/RotateCommand.hpp"
 
 // Update interval: 60 fps
 static const int UpdateInterval = 1000 / 60;
@@ -179,6 +180,11 @@ void View::setRotateTransformMode()
 
 //    m_ellipseItem->setVisible(m_targetItem);
     m_lineItem->setVisible(m_targetItem);
+
+    m_backupValues.clear();
+    foreach(QGraphicsItem *item, scene()->selectedItems()) {
+        m_backupValues.insert(item, item->rotation());
+    }
 }
 
 void View::setScaleTransformMode()
@@ -245,7 +251,19 @@ void View::mousePressEvent(QMouseEvent *event)
             break;
         }
 
-        case RotateTransformMode:
+        case RotateTransformMode: {
+            RotateCommand *command = 0;
+            foreach(QGraphicsItem *item, scene()->selectedItems()) {
+                qreal oldRotation = m_backupValues.value(item);
+                command = new RotateCommand(item, oldRotation, item->rotation(), command);
+                qApp->undoStack()->push(command);
+            }
+            m_backupValues.clear();
+
+            setSelectTransformMode();
+            break;
+        }
+
         case ScaleTransformMode:
             setSelectTransformMode();
             break;
