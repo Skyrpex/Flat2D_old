@@ -252,12 +252,12 @@ void View::mousePressEvent(QMouseEvent *event)
         }
 
         case RotateTransformMode: {
-            RotateCommand *command = 0;
+            qApp->undoStack()->beginMacro("Rotate");
             foreach(QGraphicsItem *item, scene()->selectedItems()) {
                 qreal oldRotation = m_backupValues.value(item);
-                command = new RotateCommand(item, oldRotation, item->rotation(), command);
-                qApp->undoStack()->push(command);
+                qApp->undoStack()->push(new RotateCommand(item, oldRotation, item->rotation()));
             }
+            qApp->undoStack()->endMacro();
             m_backupValues.clear();
 
             setSelectTransformMode();

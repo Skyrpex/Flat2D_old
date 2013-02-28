@@ -1,13 +1,18 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
+#include "Application.hpp"
 #include <QActionGroup>
 #include <QKeyEvent>
+#include <QUndoStack>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    ui->menuEdit->addAction(qApp->undoStack()->createUndoAction(this));
+    ui->menuEdit->addAction(qApp->undoStack()->createRedoAction(this));
 
     {
         QActionGroup *group = new QActionGroup(this);
