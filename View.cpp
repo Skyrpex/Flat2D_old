@@ -7,6 +7,9 @@
 #include <QTimer>
 #include <QStack>
 #include <QDebug>
+#include <QUrl>
+#include <QFileInfo>
+#include <QMimeData>
 #include "commands/RotateCommand.hpp"
 #include "commands/ScaleCommand.hpp"
 #include "commands/TranslateCommand.hpp"
@@ -404,6 +407,44 @@ void View::paintEvent(QPaintEvent *event)
         m_root->mapAttachmentsToScene();
     }
     QGraphicsView::paintEvent(event);
+}
+
+//void View::dragEnterEvent(QDragEnterEvent *event)
+//{
+//    if(event->mimeData()->hasUrls()) {
+//        event->accept();
+//    }
+//}
+
+void View::dragMoveEvent(QDragMoveEvent *event)
+{
+    qDebug() << dynamic_cast<Bone *>(itemAt(event->pos()));
+    if(event->mimeData()->hasUrls() && dynamic_cast<Bone *>(itemAt(event->pos()))) {
+        event->accept();
+    }
+}
+
+//void View::dragLeaveEvent(QDragLeaveEvent *event)
+//{
+//    if(event->mimeData()->hasUrls() && dynamic_cast<Bone *>(itemAt(event->pos()))) {
+//        event->accept();
+//    }
+//}
+
+void View::dropEvent(QDropEvent *event)
+{
+    Q_ASSERT(event->mimeData()->hasUrls());
+
+    foreach(QUrl url, event->mimeData()->urls()) {
+        QString filePath = url.path().mid(1);
+        QPixmap pixmap(filePath);
+        Attachment *attachment = new Attachment(pixmap);
+
+        QPointF scenePos = mapToScene(event->pos());
+        attachment->setPos(scenePos - QPointF(pixmap.width(), pixmap.height())/2.0);
+
+        scene()->addItem(attachment);
+    }
 }
 
 Bone *View::topLevelBone(const QList<QGraphicsItem *> &items) const

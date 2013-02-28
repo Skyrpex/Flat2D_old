@@ -48,6 +48,11 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
 
+//    void dragEnterEvent(QDragEnterEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
+//    void dragLeaveEvent(QDragLeaveEvent *event);
+    void dropEvent(QDropEvent *event);
+
 private:
     Bone *topLevelBone(const QList<QGraphicsItem *> &items) const;
     QGraphicsItem *nearestItem(const QPointF &scenePos, const QList<QGraphicsItem *> &items) const;

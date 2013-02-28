@@ -38,5 +38,4 @@ RESOURCES += \
     images.qrc
 
 FORMS += \
-    MainWindow.ui \
-    TextureDirWidget.ui
+    MainWindow.ui

@@ -3,11 +3,9 @@
 
 #include <QWidget>
 
+class QToolBar;
+class QTreeView;
 class QFileSystemModel;
-
-namespace Ui {
-class TextureDirWidget;
-}
 
 class TextureDirWidget : public QWidget
 {
@@ -15,12 +13,12 @@ class TextureDirWidget : public QWidget
     
 public:
     explicit TextureDirWidget(QWidget *parent = 0);
-    ~TextureDirWidget();
-    
+
 private:
     QStringList nameFilters() const;
 
-    Ui::TextureDirWidget *ui;
+    QToolBar *m_toolBar;
+    QTreeView *m_view;
     QFileSystemModel *m_model;
 };
 
