@@ -11,6 +11,7 @@
 #include "commands/ScaleCommand.hpp"
 #include "commands/TranslateCommand.hpp"
 #include "commands/CreateCommand.hpp"
+#include "commands/SelectionCommand.hpp"
 
 // Update interval: 60 fps
 static const int UpdateInterval = 1000 / 60;
@@ -503,6 +504,9 @@ QList<Attachment *> View::attachments() const
 void View::commitRotation()
 {
     qApp->undoStack()->beginMacro("Rotate");
+
+    qApp->undoStack()->push(new SelectionCommand(scene(), scene()->selectedItems()));
+
     QMapIterator<QGraphicsItem *, qreal> it(m_rotationBackup);
     while(it.hasNext()) {
         it.next();
@@ -520,6 +524,9 @@ void View::commitRotation()
 void View::commitScale()
 {
     qApp->undoStack()->beginMacro("Scale");
+
+    qApp->undoStack()->push(new SelectionCommand(scene(), scene()->selectedItems()));
+
     QMapIterator<QGraphicsItem *, qreal> it(m_scaleBackup);
     while(it.hasNext()) {
         it.next();
@@ -541,6 +548,9 @@ void View::commitTranslation()
     }
 
     qApp->undoStack()->beginMacro("Translate");
+
+    qApp->undoStack()->push(new SelectionCommand(scene(), scene()->selectedItems()));
+
     QMapIterator<QGraphicsItem *, QPointF> it(m_translationBackup);
     while(it.hasNext()) {
         it.next();
@@ -557,7 +567,10 @@ void View::commitBoneCreation()
 {
     Q_ASSERT(m_targetBone);
 
+//    qApp->undoStack()->beginMacro("Create");
     qApp->undoStack()->push(new CreateCommand(m_targetBone, m_targetBone->parentBone()));
+//    qApp->undoStack()->push(new SelectionCommand(scene(), scene()->selectedItems()));
+//    qApp->undoStack()->endMacro();
 }
 
 void View::cancelRotation()

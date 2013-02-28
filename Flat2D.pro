@@ -15,7 +15,8 @@ SOURCES += main.cpp \
     commands/RotateCommand.cpp \
     commands/ScaleCommand.cpp \
     commands/TranslateCommand.cpp \
-    commands/CreateCommand.cpp
+    commands/CreateCommand.cpp \
+    commands/SelectionCommand.cpp
 
 HEADERS  += \
     Bone.hpp \
@@ -26,7 +27,8 @@ HEADERS  += \
     commands/RotateCommand.hpp \
     commands/ScaleCommand.hpp \
     commands/TranslateCommand.hpp \
-    commands/CreateCommand.hpp
+    commands/CreateCommand.hpp \
+    commands/SelectionCommand.hpp
 
 RESOURCES += \
     images.qrc
