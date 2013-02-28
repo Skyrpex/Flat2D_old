@@ -14,10 +14,10 @@ RotateCommand::RotateCommand(QGraphicsItem *item, qreal oldRotation, qreal newRo
 
 void RotateCommand::redo()
 {
-    m_item->setRotation(m_oldRotation);
+    m_item->setRotation(m_newRotation);
 }
 
 void RotateCommand::undo()
 {
-    m_item->setRotation(m_newRotation);
+    m_item->setRotation(m_oldRotation);
 }

@@ -7,11 +7,11 @@ class QGraphicsItem;
 
 class RotateCommand : public QUndoCommand
 {
-    Q_OBJECT
 public:
     explicit RotateCommand(QGraphicsItem *item, qreal oldRotation, qreal newRotation, QUndoCommand  *parent = 0);
     
     void redo();
+    void undo();
 
 private:
     QGraphicsItem *m_item;
