@@ -246,6 +246,7 @@ void View::mousePressEvent(QMouseEvent *event)
     if(m_editMode == TransformEditMode) {
         switch(m_transformMode) {
         case SelectTransformMode: {
+            // Switch target mode?
             QGraphicsItem *item = itemAt(event->pos());
             if(m_targetMode == BoneTargetMode && dynamic_cast<Attachment *>(item)) {
                 setAttachmentTargetMode();
@@ -257,39 +258,13 @@ void View::mousePressEvent(QMouseEvent *event)
             break;
         }
 
-        case RotateTransformMode: {
-            qApp->undoStack()->beginMacro("Rotate");
-            QMapIterator<QGraphicsItem *, qreal> it(m_rotationBackup);
-            while(it.hasNext()) {
-                it.next();
-                QGraphicsItem *item = it.key();
-                qreal oldRotation = it.value();
-                qreal newRotation = item->rotation();
-                qApp->undoStack()->push(new RotateCommand(item, oldRotation, newRotation));
-            }
-            qApp->undoStack()->endMacro();
-            m_rotationBackup.clear();
-
-            setSelectTransformMode();
+        case RotateTransformMode:
+            commitRotation();
             break;
-        }
 
-        case ScaleTransformMode: {
-            qApp->undoStack()->beginMacro("Scale");
-            QMapIterator<QGraphicsItem *, qreal> it(m_scaleBackup);
-            while(it.hasNext()) {
-                it.next();
-                QGraphicsItem *item = it.key();
-                qreal oldScale = it.value();
-                qreal newScale = item->scale();
-                qApp->undoStack()->push(new ScaleCommand(item, oldScale, newScale));
-            }
-            qApp->undoStack()->endMacro();
-            m_scaleBackup.clear();
-
-            setSelectTransformMode();
+        case ScaleTransformMode:
+            commitScale();
             break;
-        }
         }
     }
     else if(m_editMode == CreateEditMode) {
@@ -493,4 +468,38 @@ QList<Attachment *> View::attachments() const
     }
 
     return attachments;
+}
+
+void View::commitRotation()
+{
+    qApp->undoStack()->beginMacro("Rotate");
+    QMapIterator<QGraphicsItem *, qreal> it(m_rotationBackup);
+    while(it.hasNext()) {
+        it.next();
+        QGraphicsItem *item = it.key();
+        qreal oldRotation = it.value();
+        qreal newRotation = item->rotation();
+        qApp->undoStack()->push(new RotateCommand(item, oldRotation, newRotation));
+    }
+    qApp->undoStack()->endMacro();
+    m_rotationBackup.clear();
+
+    setSelectTransformMode();
+}
+
+void View::commitScale()
+{
+    qApp->undoStack()->beginMacro("Scale");
+    QMapIterator<QGraphicsItem *, qreal> it(m_scaleBackup);
+    while(it.hasNext()) {
+        it.next();
+        QGraphicsItem *item = it.key();
+        qreal oldScale = it.value();
+        qreal newScale = item->scale();
+        qApp->undoStack()->push(new ScaleCommand(item, oldScale, newScale));
+    }
+    qApp->undoStack()->endMacro();
+    m_scaleBackup.clear();
+
+    setSelectTransformMode();
 }

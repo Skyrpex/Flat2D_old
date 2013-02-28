@@ -57,6 +57,9 @@ private:
     QList<Bone *> bones() const;
     QList<Attachment *> attachments() const;
 
+    void commitRotation();
+    void commitScale();
+
     Bone *m_root;
 
     TargetMode m_targetMode;
