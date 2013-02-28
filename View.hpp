@@ -61,6 +61,8 @@ private:
     void commitScale();
     void commitTranslation();
 
+    void cancelRotation();
+
     Bone *m_root;
 
     TargetMode m_targetMode;

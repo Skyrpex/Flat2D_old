@@ -267,7 +267,12 @@ void View::mousePressEvent(QMouseEvent *event)
         }
 
         case RotateTransformMode:
-            commitRotation();
+            if(event->buttons() & Qt::LeftButton) {
+                commitRotation();
+            }
+            else if(event->buttons() & Qt::RightButton) {
+                cancelRotation();
+            }
             break;
 
         case ScaleTransformMode:
@@ -532,4 +537,18 @@ void View::commitTranslation()
     }
     qApp->undoStack()->endMacro();
     m_translationBackup.clear();
+}
+
+void View::cancelRotation()
+{
+    QMapIterator<QGraphicsItem *, qreal> it(m_rotationBackup);
+    while(it.hasNext()) {
+        it.next();
+        QGraphicsItem *item = it.key();
+        qreal oldRotation = it.value();
+        item->setRotation(oldRotation);
+    }
+    m_rotationBackup.clear();
+
+    setSelectTransformMode();
 }
