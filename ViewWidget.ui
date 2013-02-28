@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ViewWidget</class>
+ <widget class="QWidget" name="ViewWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="Manhattan::StyledBar" name="toolBar" native="true"/>
+   </item>
+   <item>
+    <widget class="View" name="graphicsView"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>View</class>
+   <extends>QGraphicsView</extends>
+   <header>View.hpp</header>
+   <slots>
+    <slot>setTransformEditMode()</slot>
+    <slot>setRotateTransformMode()</slot>
+    <slot>setTranslateTransformMode()</slot>
+    <slot>setScaleTransformMode()</slot>
+    <slot>setCreateEditMode()</slot>
+    <slot>setSelectTransformMode()</slot>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>Manhattan::StyledBar</class>
+   <extends>QWidget</extends>
+   <header location="global">styledbar.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

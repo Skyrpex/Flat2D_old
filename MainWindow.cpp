@@ -18,27 +18,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction *redoAction = qApp->undoStack()->createRedoAction(this);
     redoAction->setShortcut(QKeySequence("Ctrl+Y"));
     ui->menuEdit->addAction(redoAction);
-
-    {
-        QActionGroup *group = new QActionGroup(this);
-        group->addAction(ui->actionCreate);
-        group->addAction(ui->actionTransform);
-    }
-
-    ui->actionTransform->setChecked(true);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::setCreateMode()
-{
-    ui->graphicsView->setCreateEditMode();
-}
-
-void MainWindow::setTransformMode()
-{
-    ui->graphicsView->setTransformEditMode();
 }

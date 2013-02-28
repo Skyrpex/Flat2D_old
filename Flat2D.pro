@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     commands/CreateCommand.cpp \
     commands/SelectionCommand.cpp \
     TextureDirWidget.cpp \
-    TextureIconProvider.cpp
+    TextureIconProvider.cpp \
+    ViewWidget.cpp
 
 HEADERS  += \
     Bone.hpp \
@@ -33,10 +34,12 @@ HEADERS  += \
     commands/CreateCommand.hpp \
     commands/SelectionCommand.hpp \
     TextureDirWidget.hpp \
-    TextureIconProvider.hpp
+    TextureIconProvider.hpp \
+    ViewWidget.hpp
 
 RESOURCES += \
     images.qrc
 
 FORMS += \
-    MainWindow.ui
+    MainWindow.ui \
+    ViewWidget.ui

@@ -36,7 +36,7 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="TextureDirWidget" name="widget" native="true"/>
-      <widget class="View" name="graphicsView"/>
+      <widget class="ViewWidget" name="widget_2" native="true"/>
      </widget>
     </item>
    </layout>
@@ -69,60 +69,8 @@
    <addaction name="menuEdit"/>
    <addaction name="menuAbout"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionCreate"/>
-   <addaction name="actionTransform"/>
-  </widget>
-  <action name="actionTransform">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Transform</string>
-   </property>
-   <property name="toolTip">
-    <string>Transform</string>
-   </property>
-   <property name="shortcut">
-    <string>2</string>
-   </property>
-  </action>
-  <action name="actionCreate">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Create</string>
-   </property>
-   <property name="shortcut">
-    <string>1</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>View</class>
-   <extends>QGraphicsView</extends>
-   <header>View.hpp</header>
-   <slots>
-    <slot>setTransformEditMode()</slot>
-    <slot>setRotateTransformMode()</slot>
-    <slot>setTranslateTransformMode()</slot>
-    <slot>setScaleTransformMode()</slot>
-    <slot>setCreateEditMode()</slot>
-    <slot>setSelectTransformMode()</slot>
-   </slots>
-  </customwidget>
   <customwidget>
    <class>TextureDirWidget</class>
    <extends>QWidget</extends>
@@ -135,42 +83,15 @@
    <header location="global">minisplitter.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>ViewWidget</class>
+   <extends>QWidget</extends>
+   <header>ViewWidget.hpp</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>actionCreate</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>setCreateMode()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionTransform</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>setTransformMode()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>setCreateMode()</slot>
   <slot>setTransformMode()</slot>
