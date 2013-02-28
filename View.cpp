@@ -307,7 +307,8 @@ void View::mousePressEvent(QMouseEvent *event)
 
                 QPointF scenePos = mapToScene(event->pos());
                 m_targetBone->setScenePos(scenePos);
-                m_targetBone->setScaleFromLength(0);
+                m_targetBone->setJoint(true);
+                m_targetBone->setSceneScale(1);
 
                 scene()->clearSelection();
                 m_targetBone->setSelected(true);

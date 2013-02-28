@@ -22,6 +22,7 @@ public:
 
     void setScenePos(const QPointF &scenePos);
     void setSceneRotation(qreal sceneRotation);
+    void setSceneScale(qreal sceneScale);
     void setScaleFromLength(qreal length);
     void setScaleFromSceneLength(qreal sceneLength);
 
@@ -31,11 +32,12 @@ public:
     QRectF boundingRect() const;
 //    QPainterPath shape() const;
 
+    void setJoint(bool isJoint);
+
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
-    void setJoint(bool isJoint);
     QPolygonF bonePolygon() const;
 
     bool m_isJoint;

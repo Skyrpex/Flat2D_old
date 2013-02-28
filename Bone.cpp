@@ -110,6 +110,15 @@ void Bone::setSceneRotation(qreal sceneRotation)
     setRotation(sceneRotation);
 }
 
+void Bone::setSceneScale(qreal sceneScale)
+{
+    Bone *parent = parentBone();
+    if(parent) {
+        sceneScale /= parent->m_sceneScale;
+    }
+    setScale(sceneScale);
+}
+
 void Bone::setScaleFromLength(qreal length)
 {
     if(length < 10) {
@@ -147,7 +156,7 @@ void Bone::setBoneSceneLength(qreal sceneLength)
     if(parent) {
         sceneLength /= parent->m_sceneScale;
     }
-    setBoneLength(sceneLength);
+    setBoneLength(sceneLength / scale());
 }
 
 void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
