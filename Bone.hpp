@@ -26,6 +26,7 @@ public:
     void setScaleFromSceneLength(qreal sceneLength);
 
     QRectF boundingRect() const;
+//    QPainterPath shape() const;
 
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

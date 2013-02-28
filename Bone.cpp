@@ -137,10 +137,14 @@ void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 //    myOption.state &= ~QStyle::State_Selected;
 //    QGraphicsPolygonItem::paint(painter, &myOption, widget);
 
+
+
+
     bool isSelected = option->state & QStyle::State_Selected;
-    bool isMouseOver = option->state & QStyle::State_MouseOver;
+//    bool isMouseOver = option->state & QStyle::State_MouseOver;
     painter->setBrush(isSelected? Qt::white : Qt::gray);
     painter->setPen(QPen(Qt::black, 0));
+//    painter->setPen(QPen(Qt::lightGray, 0));
 
     if(m_isJoint) {
         painter->drawRect(JointRect);
@@ -148,6 +152,10 @@ void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     else {
         painter->drawPolygon(BonePolygon);
     }
+
+//    painter->setPen(QPen(Qt::black, 0));
+    painter->setBrush(QColor(0, 0, 0, 50));
+    painter->drawEllipse(QPointF(), 4, 4);
 }
 
 void Bone::setJoint(bool isJoint)
@@ -164,3 +172,7 @@ QRectF Bone::boundingRect() const
 {
     return m_isJoint? JointRect : BonePolygon.boundingRect();
 }
+
+//QPainterPath Bone::shape() const
+//{
+//}
