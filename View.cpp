@@ -182,9 +182,9 @@ void View::setRotateTransformMode()
 //    m_ellipseItem->setVisible(m_targetItem);
     m_lineItem->setVisible(m_targetItem);
 
-    m_backupValues.clear();
+    m_rotationBackup.clear();
     foreach(QGraphicsItem *item, scene()->selectedItems()) {
-        m_backupValues.insert(item, item->rotation());
+        m_rotationBackup.insert(item, item->rotation());
     }
 }
 
@@ -259,12 +259,16 @@ void View::mousePressEvent(QMouseEvent *event)
 
         case RotateTransformMode: {
             qApp->undoStack()->beginMacro("Rotate");
-            foreach(QGraphicsItem *item, scene()->selectedItems()) {
-                qreal oldRotation = m_backupValues.value(item);
-                qApp->undoStack()->push(new RotateCommand(item, oldRotation, item->rotation()));
+            QMapIterator<QGraphicsItem *, qreal> it(m_rotationBackup);
+            while(it.hasNext()) {
+                it.next();
+                QGraphicsItem *item = it.key();
+                qreal oldRotation = it.value();
+                qreal newRotation = item->rotation();
+                qApp->undoStack()->push(new RotateCommand(item, oldRotation, newRotation));
             }
             qApp->undoStack()->endMacro();
-            m_backupValues.clear();
+            m_rotationBackup.clear();
 
             setSelectTransformMode();
             break;
