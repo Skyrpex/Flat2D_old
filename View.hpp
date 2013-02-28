@@ -62,6 +62,7 @@ private:
     void commitTranslation();
 
     void cancelRotation();
+    void cancelScale();
 
     Bone *m_root;
 
