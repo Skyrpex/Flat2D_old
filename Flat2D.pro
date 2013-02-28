@@ -12,7 +12,8 @@ SOURCES += main.cpp \
     Attachment.cpp \
     Application.cpp \
     MainWindow.cpp \
-    commands/RotateCommand.cpp
+    commands/RotateCommand.cpp \
+    commands/ScaleCommand.cpp
 
 HEADERS  += \
     Bone.hpp \
@@ -20,7 +21,8 @@ HEADERS  += \
     Attachment.hpp \
     Application.hpp \
     MainWindow.hpp \
-    commands/RotateCommand.hpp
+    commands/RotateCommand.hpp \
+    commands/ScaleCommand.hpp
 
 RESOURCES += \
     images.qrc

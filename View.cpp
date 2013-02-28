@@ -8,6 +8,7 @@
 #include <QStack>
 #include <QDebug>
 #include "commands/RotateCommand.hpp"
+#include "commands/ScaleCommand.hpp"
 
 // Update interval: 60 fps
 static const int UpdateInterval = 1000 / 60;
@@ -213,6 +214,11 @@ void View::setScaleTransformMode()
 //    m_ellipseItem->setVisible(false);
     m_lineItem->setVisible(m_targetItem);
 //    m_thickEllipseItem->setVisible(m_targetItem);
+
+    m_scaleBackup.clear();
+    foreach(QGraphicsItem *item, scene()->selectedItems()) {
+        m_scaleBackup.insert(item, item->scale());
+    }
 }
 
 void View::keyPressEvent(QKeyEvent *event)
@@ -264,9 +270,22 @@ void View::mousePressEvent(QMouseEvent *event)
             break;
         }
 
-        case ScaleTransformMode:
+        case ScaleTransformMode: {
+            qApp->undoStack()->beginMacro("Scale");
+            QMapIterator<QGraphicsItem *, qreal> it(m_scaleBackup);
+            while(it.hasNext()) {
+                it.next();
+                QGraphicsItem *item = it.key();
+                qreal oldScale = it.value();
+                qreal newScale = item->scale();
+                qApp->undoStack()->push(new ScaleCommand(item, oldScale, newScale));
+            }
+            qApp->undoStack()->endMacro();
+            m_scaleBackup.clear();
+
             setSelectTransformMode();
             break;
+        }
         }
     }
     else if(m_editMode == CreateEditMode) {

@@ -79,6 +79,7 @@ private:
     Bone *m_targetBone;
 
     QMap<QGraphicsItem *, qreal> m_backupValues;
+    QMap<QGraphicsItem *, qreal> m_scaleBackup;
 };
 
 #endif // VIEW_HPP
