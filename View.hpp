@@ -60,6 +60,7 @@ private:
     void commitRotation();
     void commitScale();
     void commitTranslation();
+    void commitBoneCreation();
 
     void cancelRotation();
     void cancelScale();

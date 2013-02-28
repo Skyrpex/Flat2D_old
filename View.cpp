@@ -10,6 +10,7 @@
 #include "commands/RotateCommand.hpp"
 #include "commands/ScaleCommand.hpp"
 #include "commands/TranslateCommand.hpp"
+#include "commands/CreateCommand.hpp"
 
 // Update interval: 60 fps
 static const int UpdateInterval = 1000 / 60;
@@ -385,7 +386,14 @@ void View::mouseReleaseEvent(QMouseEvent *event)
     m_thickEllipseItem->setVisible(false);
     QGraphicsView::mouseReleaseEvent(event);
 
-    commitTranslation();
+    if(m_editMode == TransformEditMode) {
+        commitTranslation();
+    }
+    else {
+        if(m_targetBone) {
+            commitBoneCreation();
+        }
+    }
 }
 
 void View::paintEvent(QPaintEvent *event)
@@ -542,6 +550,13 @@ void View::commitTranslation()
     }
     qApp->undoStack()->endMacro();
     m_translationBackup.clear();
+}
+
+void View::commitBoneCreation()
+{
+    Q_ASSERT(m_targetBone);
+
+    qApp->undoStack()->push(new CreateCommand(m_targetBone, m_targetBone->parentBone()));
 }
 
 void View::cancelRotation()
