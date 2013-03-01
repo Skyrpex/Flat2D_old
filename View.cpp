@@ -485,7 +485,7 @@ void View::mouseReleaseEvent(QMouseEvent *event)
                 }
                 else {
                     Attachment *targetAttachment = dynamic_cast<Attachment *>(m_targetItem);
-                    if(targetAttachment) {
+                    if(targetAttachment && targetAttachment->bone() != bone) {
                         bone->addAttachment(targetAttachment);
                     }
                 }
