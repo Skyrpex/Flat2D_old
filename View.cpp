@@ -413,17 +413,18 @@ void View::paintEvent(QPaintEvent *event)
 void View::drawForeground(QPainter *painter, const QRectF &rect)
 {
     QGraphicsView::drawForeground(painter, rect);
-    painter->setPen(QPen(Qt::darkRed, 0));
     foreach(QGraphicsItem *item, scene()->items()) {
         Bone *bone = dynamic_cast<Bone *>(item);
         if(bone) {
             // Draw line to parent bone
             if(bone->parentBone()) {
-                painter->drawLine(bone->scenePos(), bone->parentBone()->scenePos());
+                painter->setPen(QPen(Qt::black, 0));
+                painter->drawLine(bone->scenePos(), bone->parentBone()->scenePeakPos());
             }
 
             // Draw lines to attachments
             foreach(Attachment *attachment, bone->attachments()) {
+                painter->setPen(QPen(Qt::darkRed, 0));
                 painter->drawLine(bone->scenePos(), attachment->scenePos());
             }
         }

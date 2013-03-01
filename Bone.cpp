@@ -146,6 +146,11 @@ qreal Bone::sceneRotation() const
     return m_sceneRotation;
 }
 
+QPointF Bone::scenePeakPos() const
+{
+    return mapToScene(QPointF(m_boneLength, 0));
+}
+
 void Bone::setBoneLength(qreal length)
 {
     setJoint(length < DefaultJointWidth);

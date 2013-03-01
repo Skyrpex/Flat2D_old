@@ -27,6 +27,7 @@ public:
     void setScaleFromSceneLength(qreal sceneLength);
 
     qreal sceneRotation() const;
+    QPointF scenePeakPos() const;
 
     void setBoneLength(qreal length);
     void setBoneSceneLength(qreal sceneLength);
