@@ -8,6 +8,9 @@ Attachment::Attachment(const QPixmap &pixmap)
 {
     setFlags(ItemIsSelectable | ItemIsMovable);
     setZValue(-1);
+
+    QPointF pixmapSize(static_cast<qreal>(pixmap.width()), static_cast<qreal>(pixmap.height()));
+    setOffset(-pixmapSize/2);
 }
 
 QPointF Attachment::localPos() const
