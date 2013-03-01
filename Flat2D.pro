@@ -6,6 +6,7 @@ TARGET = Flat2D
 TEMPLATE = app
 
 include(qt-manhattan-style/qt-manhattan-style.pri)
+include(libs/QxMesh/QxMesh.pri)
 
 SOURCES += main.cpp \
     Bone.cpp \
