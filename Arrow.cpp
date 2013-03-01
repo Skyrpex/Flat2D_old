@@ -61,13 +61,13 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     painter->setBrush(myColor);
 
     QLineF centerLine(p1(), p2());
-    QPolygonF endPolygon = myEndItem->boundingRect();
-    QPointF p1 = endPolygon.first() + this->p2();
+    QPolygonF endPolygon = myEndItem->mapToScene(myEndItem->boundingRect());
+    QPointF p1 = endPolygon.first();
     QPointF p2;
     QPointF intersectPoint;
     QLineF polyLine;
     for (int i = 1; i < endPolygon.count(); ++i) {
-        p2 = endPolygon.at(i) + this->p2();
+        p2 = endPolygon.at(i);
         polyLine = QLineF(p1, p2);
         QLineF::IntersectType intersectType =
                 polyLine.intersect(centerLine, &intersectPoint);
