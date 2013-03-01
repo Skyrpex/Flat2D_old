@@ -18,8 +18,9 @@ public:
     };
 
     enum EditMode {
+        CreateEditMode,
         TransformEditMode,
-        CreateEditMode
+        ParentEditMode
     };
 
     enum TransformMode {
@@ -36,6 +37,7 @@ public slots:
 
     void setTransformEditMode();
     void setCreateEditMode();
+    void setParentEditMode();
 
     void setSelectTransformMode();
     void setRotateTransformMode();

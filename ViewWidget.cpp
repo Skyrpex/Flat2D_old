@@ -28,9 +28,17 @@ ViewWidget::ViewWidget(QWidget *parent) :
     connect(transformButton, SIGNAL(pressed()), ui->graphicsView, SLOT(setTransformEditMode()));
     layout->addWidget(transformButton);
 
+    QToolButton *parentButton = new QToolButton;
+    parentButton->setText("Parent edit");
+    parentButton->setCheckable(true);
+    parentButton->setAutoRaise(true);
+    connect(parentButton, SIGNAL(pressed()), ui->graphicsView, SLOT(setParentEditMode()));
+    layout->addWidget(parentButton);
+
     QButtonGroup *group = new QButtonGroup(this);
     group->addButton(createButton);
     group->addButton(transformButton);
+    group->addButton(parentButton);
 
     layout->addStretch();
 

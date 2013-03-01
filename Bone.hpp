@@ -17,6 +17,7 @@ public:
 
     QList<Attachment *> attachments() const;
     void addAttachment(Attachment *attachment);
+    void removeAttachment(Attachment *attachment);
     void mapAttachmentsToScene();
     void mapAttachmentsFromScene() const;
 

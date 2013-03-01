@@ -5,6 +5,7 @@ Attachment::Attachment(const QPixmap &pixmap)
     : QGraphicsPixmapItem(pixmap)
     , m_localRotation(0)
     , m_localScale(1)
+    , m_bone(NULL)
 {
     setFlags(ItemIsSelectable | ItemIsMovable);
     setZValue(-1);
@@ -13,6 +14,16 @@ Attachment::Attachment(const QPixmap &pixmap)
     setOffset(-pixmapSize/2);
 
     setTransformationMode(Qt::SmoothTransformation);
+}
+
+Bone *Attachment::bone() const
+{
+    return m_bone;
+}
+
+void Attachment::setBone(Bone *bone)
+{
+    m_bone = bone;
 }
 
 QPointF Attachment::localPos() const

@@ -26,7 +26,7 @@ Bone::Bone(const QString &name, Bone *parent)
                     << QPointF(m_boneLength, 0)
                     << QPointF(10, -5);
     }
-    setFlags(ItemIsSelectable | ItemIsMovable | ItemIsPanel);
+    setFlags(ItemIsSelectable | ItemIsMovable | ItemIsPanel | ItemDoesntPropagateOpacityToChildren);
     setAcceptHoverEvents(true);
 }
 
@@ -61,7 +61,20 @@ void Bone::addAttachment(Attachment *attachment)
 {
     Q_ASSERT( attachment && !m_attachments.contains(attachment) );
 
+    if(attachment->bone()) {
+        attachment->bone()->removeAttachment(attachment);
+    }
+
+    attachment->setBone(this);
     m_attachments << attachment;
+}
+
+void Bone::removeAttachment(Attachment *attachment)
+{
+    Q_ASSERT( attachment && m_attachments.contains(attachment) );
+
+    attachment->setBone(NULL);
+    m_attachments.removeOne(attachment);
 }
 
 void Bone::mapAttachmentsToScene()

@@ -151,6 +151,15 @@ void View::setCreateEditMode()
     m_solidLineItem->setVisible(false);
 }
 
+void View::setParentEditMode()
+{
+    m_editMode = ParentEditMode;
+    m_targetItem = NULL;
+
+    m_ellipseItem->setVisible(false);
+    m_solidLineItem->setVisible(false);
+}
+
 void View::setSelectTransformMode()
 {
     if(m_transformMode == SelectTransformMode) {
@@ -323,6 +332,19 @@ void View::mousePressEvent(QMouseEvent *event)
             }
         }
     }
+    else if(m_editMode == ParentEditMode) {
+//        foreach(QGraphicsItem *item, scene()->items()) {
+//            item->setOpacity(0.5);
+//        }
+
+        QGraphicsItem *itemAtCursor = itemAt(event->pos());
+        Bone *bone = dynamic_cast<Bone *>(itemAtCursor);
+        Attachment *attachment = dynamic_cast<Attachment *>(itemAtCursor);
+        if(bone || attachment) {
+            m_targetItem = itemAtCursor;
+            m_hotSpot = mapToScene(event->pos());
+        }
+    }
 }
 
 void View::mouseMoveEvent(QMouseEvent *event)
@@ -372,7 +394,7 @@ void View::mouseMoveEvent(QMouseEvent *event)
         }
         }
     }
-    else {
+    else if(m_editMode == CreateEditMode) {
         if(event->buttons() & Qt::LeftButton) {
             if(m_targetBone) {
                 QPointF scenePos = mapToScene(event->pos());
@@ -383,6 +405,18 @@ void View::mouseMoveEvent(QMouseEvent *event)
                 m_targetBone->setBoneSceneLength(line.length());
             }
         }
+    }
+    else if(m_editMode == ParentEditMode) {
+//        if(event->buttons() == 0) {
+//            foreach(QGraphicsItem *item, scene()->items()) {
+//                item->setOpacity(0.5);
+//            }
+
+//            QGraphicsItem *item = itemAt(event->pos());
+//            if(item) {
+//                item->setOpacity(1);
+//            }
+//        }
     }
 }
 
@@ -395,10 +429,30 @@ void View::mouseReleaseEvent(QMouseEvent *event)
     if(m_editMode == TransformEditMode) {
         commitTranslation();
     }
-    else {
+    else if(m_editMode == CreateEditMode) {
         if(m_targetBone) {
             commitBoneCreation();
         }
+    }
+    else if(m_editMode == ParentEditMode) {
+        if(m_targetItem) {
+            QGraphicsItem *itemAtCursor = itemAt(event->pos());
+            Bone *bone = dynamic_cast<Bone *>(itemAtCursor);
+            if(bone && bone != m_targetItem) {
+                Bone *targetBone = dynamic_cast<Bone *>(m_targetItem);
+                if(targetBone) {
+                    targetBone->setParentItem(bone);
+                }
+                else {
+                    Attachment *targetAttachment = dynamic_cast<Attachment *>(m_targetItem);
+                    if(targetAttachment) {
+                        bone->addAttachment(targetAttachment);
+                    }
+                }
+            }
+        }
+
+        m_targetItem = NULL;
     }
 }
 
@@ -413,6 +467,8 @@ void View::paintEvent(QPaintEvent *event)
 void View::drawForeground(QPainter *painter, const QRectF &rect)
 {
     QGraphicsView::drawForeground(painter, rect);
+
+    // Draw parental lines
     foreach(QGraphicsItem *item, scene()->items()) {
         Bone *bone = dynamic_cast<Bone *>(item);
         if(bone) {
@@ -427,6 +483,19 @@ void View::drawForeground(QPainter *painter, const QRectF &rect)
                 painter->setPen(QPen(Qt::darkRed, 0));
                 painter->drawLine(bone->scenePos(), attachment->scenePos());
             }
+        }
+    }
+
+    // Draw parental edit line
+    if(m_editMode == ParentEditMode) {
+        if(m_targetItem) {
+            QPen pen(Qt::green, 2);
+            pen.setStyle(Qt::DashLine);
+            pen.setCosmetic(true);
+            painter->setPen(pen);
+
+            QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));
+            painter->drawLine(m_hotSpot, cursorPos);
         }
     }
 }
