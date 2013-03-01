@@ -9,6 +9,7 @@ class Bone : public QGraphicsItem
 {
 public:
     Bone(const QString &name, Bone *parent = 0);
+    ~Bone();
 
     Bone *parentBone() const;
     QList<Bone *> childBones() const;

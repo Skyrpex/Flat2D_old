@@ -10,6 +10,7 @@
 #include <QUrl>
 #include <QFileInfo>
 #include <QMimeData>
+#include <QMenu>
 #include "commands/RotateCommand.hpp"
 #include "commands/ScaleCommand.hpp"
 #include "commands/TranslateCommand.hpp"
@@ -141,6 +142,7 @@ void View::setCreateEditMode()
 
     setBoneTargetMode();
     setDragMode(NoDrag);
+    m_targetBone = NULL;
 
     if(scene()->selectedItems().count() > 1) {
         scene()->clearSelection();
@@ -301,35 +303,45 @@ void View::mousePressEvent(QMouseEvent *event)
         }
     }
     else if(m_editMode == CreateEditMode) {
-        QGraphicsItem *item = itemAt(event->pos());
-        Bone *bone = dynamic_cast<Bone *>(item);
-        if(bone) {
-            scene()->clearSelection();
-            bone->setSelected(true);
-            m_targetBone = 0;
-        }
-        else {
-
-            Bone *parent = 0;
-            QList<QGraphicsItem *> selectedItems = scene()->selectedItems();
-            if(selectedItems.count() == 1) {
-                parent = dynamic_cast<Bone *>(selectedItems.first());
-            }
-
-            if(parent) {
-                m_targetBone = new Bone("New", parent);
-
-                QPointF scenePos = mapToScene(event->pos());
-                m_targetBone->setScenePos(scenePos);
-                m_targetBone->setJoint(true);
-                m_targetBone->setSceneScale(1);
-
-                scene()->clearSelection();
-                m_targetBone->setSelected(true);
+        if(event->buttons() & Qt::LeftButton) {
+            qDebug() << m_targetBone;
+            if(m_targetBone) {
+                commitBoneCreation();
             }
             else {
-                m_targetBone = 0;
+                QGraphicsItem *item = itemAt(event->pos());
+                Bone *bone = dynamic_cast<Bone *>(item);
+                if(bone) {
+                    scene()->clearSelection();
+                    bone->setSelected(true);
+                    m_targetBone = 0;
+                }
+                else {
+                    Bone *parent = 0;
+                    QList<QGraphicsItem *> selectedItems = scene()->selectedItems();
+                    if(selectedItems.count() == 1) {
+                        parent = dynamic_cast<Bone *>(selectedItems.first());
+                    }
+
+                    if(parent) {
+                        m_targetBone = new Bone("New", parent);
+
+                        QPointF scenePos = mapToScene(event->pos());
+                        m_targetBone->setScenePos(scenePos);
+                        m_targetBone->setJoint(true);
+                        m_targetBone->setSceneScale(1);
+
+                        scene()->clearSelection();
+                        m_targetBone->setSelected(true);
+                    }
+                    else {
+                        m_targetBone = NULL;
+                    }
+                }
             }
+        }
+        else if(event->buttons() & Qt::RightButton) {
+//            cancelScale();
         }
     }
     else if(m_editMode == ParentEditMode) {
@@ -349,13 +361,16 @@ void View::mousePressEvent(QMouseEvent *event)
 
 void View::mouseMoveEvent(QMouseEvent *event)
 {
+    if(event->buttons() & Qt::RightButton) {
+        event->ignore();
+        return;
+    }
+
     if(m_editMode == TransformEditMode) {
         switch(m_transformMode) {
         case SelectTransformMode: {
-            if(event->buttons() & Qt::LeftButton) {
-                QGraphicsView::mouseMoveEvent(event);
-                m_hasTranslated = true;
-            }
+            QGraphicsView::mouseMoveEvent(event);
+            m_hasTranslated = true;
             break;
         }
 
@@ -395,15 +410,13 @@ void View::mouseMoveEvent(QMouseEvent *event)
         }
     }
     else if(m_editMode == CreateEditMode) {
-        if(event->buttons() & Qt::LeftButton) {
-            if(m_targetBone) {
-                QPointF scenePos = mapToScene(event->pos());
-                QLineF line(m_targetBone->scenePos(), scenePos);
+        if(m_targetBone) {
+            QPointF scenePos = mapToScene(event->pos());
+            QLineF line(m_targetBone->scenePos(), scenePos);
 
-                m_targetBone->setSceneRotation(-line.angle());
+            m_targetBone->setSceneRotation(-line.angle());
 
-                m_targetBone->setBoneSceneLength(line.length());
-            }
+            m_targetBone->setBoneSceneLength(line.length());
         }
     }
     else if(m_editMode == ParentEditMode) {
@@ -429,11 +442,11 @@ void View::mouseReleaseEvent(QMouseEvent *event)
     if(m_editMode == TransformEditMode) {
         commitTranslation();
     }
-    else if(m_editMode == CreateEditMode) {
-        if(m_targetBone) {
-            commitBoneCreation();
-        }
-    }
+//    else if(m_editMode == CreateEditMode) {
+//        if(m_targetBone) {
+//            commitBoneCreation();
+//        }
+//    }
     else if(m_editMode == ParentEditMode) {
         if(m_targetItem) {
             QGraphicsItem *itemAtCursor = itemAt(event->pos());
@@ -453,6 +466,35 @@ void View::mouseReleaseEvent(QMouseEvent *event)
         }
 
         m_targetItem = NULL;
+    }
+}
+
+void View::contextMenuEvent(QContextMenuEvent *event)
+{
+    QGraphicsItem *itemAtCursor = itemAt(event->pos());
+    Bone *bone = dynamic_cast<Bone *>(itemAtCursor);
+    if(bone) {
+        QMenu menu;
+        QAction *removeAction = menu.addAction(tr("Remove"));
+        QAction *removeChildrenAction = menu.addAction(tr("Remove Children"));
+
+        bool hasParent = bone->parentBone();
+        bool hasChildren = !bone->childBones().isEmpty();
+
+        removeAction->setEnabled(hasParent);
+        removeChildrenAction->setVisible(hasChildren);
+
+        QAction *selectedAction = menu.exec(event->globalPos());
+        if(selectedAction == removeAction) {
+            delete bone;
+        }
+        else if(selectedAction == removeChildrenAction) {
+            qDeleteAll(bone->childBones());
+        }
+        event->accept();
+    }
+    else {
+        event->ignore();
     }
 }
 
@@ -712,6 +754,8 @@ void View::commitBoneCreation()
     qApp->undoStack()->push(new CreateCommand(m_targetBone, m_targetBone->parentBone()));
 //    qApp->undoStack()->push(new SelectionCommand(scene(), scene()->selectedItems()));
 //    qApp->undoStack()->endMacro();
+
+    m_targetBone = NULL;
 }
 
 void View::cancelRotation()

@@ -30,6 +30,11 @@ Bone::Bone(const QString &name, Bone *parent)
     setAcceptHoverEvents(true);
 }
 
+Bone::~Bone()
+{
+    qDeleteAll(attachments());
+}
+
 Bone *Bone::parentBone() const
 {
     return dynamic_cast<Bone *>(parentItem());
