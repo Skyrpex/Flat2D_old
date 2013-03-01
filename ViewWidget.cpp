@@ -33,6 +33,8 @@ ViewWidget::ViewWidget(QWidget *parent) :
     group->addButton(transformButton);
 
     layout->addStretch();
+
+    transformButton->setChecked(true);
 }
 
 ViewWidget::~ViewWidget()

@@ -44,7 +44,7 @@ View::View(QWidget *parent) :
     setRenderHints(QPainter::Antialiasing);
     setBackgroundBrush(Qt::darkGray);
     setStyleSheet("QGraphicsView { border: 0; }");
-
+    setAcceptDrops(true);
 
     Bone *bone = new Bone("Bone 2", m_root);
     bone->setScaleFromLength(100);
@@ -410,18 +410,40 @@ void View::paintEvent(QPaintEvent *event)
     QGraphicsView::paintEvent(event);
 }
 
-//void View::dragEnterEvent(QDragEnterEvent *event)
-//{
-//    if(event->mimeData()->hasUrls()) {
-//        event->accept();
-//    }
-//}
+void View::drawForeground(QPainter *painter, const QRectF &rect)
+{
+    QGraphicsView::drawForeground(painter, rect);
+    painter->setPen(QPen(Qt::darkRed, 0));
+    foreach(QGraphicsItem *item, scene()->items()) {
+        Bone *bone = dynamic_cast<Bone *>(item);
+        if(bone) {
+            // Draw line to parent bone
+            if(bone->parentBone()) {
+                painter->drawLine(bone->scenePos(), bone->parentBone()->scenePos());
+            }
+
+            // Draw lines to attachments
+            foreach(Attachment *attachment, bone->attachments()) {
+                painter->drawLine(bone->scenePos(), attachment->scenePos());
+            }
+        }
+    }
+}
+
+void View::dragEnterEvent(QDragEnterEvent *event)
+{
+    if(event->mimeData()->hasUrls()) {
+        event->accept();
+    }
+}
 
 void View::dragMoveEvent(QDragMoveEvent *event)
 {
-    qDebug() << dynamic_cast<Bone *>(itemAt(event->pos()));
     if(event->mimeData()->hasUrls() && dynamic_cast<Bone *>(itemAt(event->pos()))) {
         event->accept();
+    }
+    else {
+        event->ignore();
     }
 }
 
@@ -436,6 +458,9 @@ void View::dropEvent(QDropEvent *event)
 {
     Q_ASSERT(event->mimeData()->hasUrls());
 
+    Bone *bone = dynamic_cast<Bone *>(itemAt(event->pos()));
+    Q_ASSERT(bone);
+
     foreach(QUrl url, event->mimeData()->urls()) {
         QString filePath = url.path().mid(1);
         QPixmap pixmap(filePath);
@@ -443,9 +468,13 @@ void View::dropEvent(QDropEvent *event)
 
         QPointF scenePos = mapToScene(event->pos());
         attachment->setPos(scenePos - QPointF(pixmap.width(), pixmap.height())/2.0);
+        attachment->setLocalRotation(-bone->sceneRotation());
 
+        bone->addAttachment(attachment);
         scene()->addItem(attachment);
     }
+
+    event->acceptProposedAction();
 }
 
 Bone *View::topLevelBone(const QList<QGraphicsItem *> &items) const

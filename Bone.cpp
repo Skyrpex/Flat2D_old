@@ -141,6 +141,11 @@ void Bone::setScaleFromSceneLength(qreal sceneLength)
     setScaleFromLength(sceneLength);
 }
 
+qreal Bone::sceneRotation() const
+{
+    return m_sceneRotation;
+}
+
 void Bone::setBoneLength(qreal length)
 {
     setJoint(length < DefaultJointWidth);

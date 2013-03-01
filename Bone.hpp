@@ -26,6 +26,8 @@ public:
     void setScaleFromLength(qreal length);
     void setScaleFromSceneLength(qreal sceneLength);
 
+    qreal sceneRotation() const;
+
     void setBoneLength(qreal length);
     void setBoneSceneLength(qreal sceneLength);
 
