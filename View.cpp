@@ -509,7 +509,7 @@ void View::dragEnterEvent(QDragEnterEvent *event)
 
 void View::dragMoveEvent(QDragMoveEvent *event)
 {
-    if(event->mimeData()->hasUrls() && dynamic_cast<Bone *>(itemAt(event->pos()))) {
+    if(event->mimeData()->hasUrls() /*&& dynamic_cast<Bone *>(itemAt(event->pos()))*/) {
         event->accept();
     }
     else {
@@ -528,8 +528,8 @@ void View::dropEvent(QDropEvent *event)
 {
     Q_ASSERT(event->mimeData()->hasUrls());
 
-    Bone *bone = dynamic_cast<Bone *>(itemAt(event->pos()));
-    Q_ASSERT(bone);
+//    Bone *bone = dynamic_cast<Bone *>(itemAt(event->pos()));
+//    Q_ASSERT(bone);
 
     foreach(QUrl url, event->mimeData()->urls()) {
         QString filePath = url.path().mid(1);
@@ -538,9 +538,9 @@ void View::dropEvent(QDropEvent *event)
 
         QPointF scenePos = mapToScene(event->pos());
         attachment->setPos(scenePos - QPointF(pixmap.width(), pixmap.height())/2.0);
-        attachment->setLocalRotation(-bone->sceneRotation());
+//        attachment->setLocalRotation(-bone->sceneRotation());
 
-        bone->addAttachment(attachment);
+//        bone->addAttachment(attachment);
         scene()->addItem(attachment);
     }
 
