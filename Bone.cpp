@@ -228,7 +228,7 @@ void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     }
 
     painter->setBrush(brush());
-    painter->setPen(QPen(penColor));
+    painter->setPen(QPen(penColor, 0));
     painter->drawPath(shape());
 }
 
