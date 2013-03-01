@@ -39,7 +39,8 @@ View::View(QWidget *parent) :
     m_ellipseItem(new QGraphicsEllipseItem(-10, -10, 20, 20)),
     m_thickEllipseItem(new QGraphicsEllipseItem(-10, -10, 20, 20)),
     m_lineItem(new QGraphicsLineItem),
-    m_solidLineItem(new QGraphicsLineItem)
+    m_solidLineItem(new QGraphicsLineItem),
+    m_parentalLinesVisible(false)
 {
     setSceneRect(-512, -400, 1024, 800);
     setRenderHints(QPainter::Antialiasing);
@@ -250,6 +251,11 @@ void View::setScaleTransformMode()
     foreach(QGraphicsItem *item, scene()->selectedItems()) {
         m_scaleBackup.insert(item, item->scale());
     }
+}
+
+void View::setParentalLinesVisible(bool visible)
+{
+    m_parentalLinesVisible = visible;
 }
 
 void View::keyPressEvent(QKeyEvent *event)
@@ -532,19 +538,21 @@ void View::drawForeground(QPainter *painter, const QRectF &rect)
     QGraphicsView::drawForeground(painter, rect);
 
     // Draw parental lines
-    foreach(QGraphicsItem *item, scene()->items()) {
-        Bone *bone = dynamic_cast<Bone *>(item);
-        if(bone) {
-            // Draw line to parent bone
-            if(bone->parentBone()) {
-                painter->setPen(QPen(Qt::black, 0));
-                painter->drawLine(bone->scenePos(), bone->parentBone()->scenePeakPos());
-            }
+    if(m_parentalLinesVisible) {
+        foreach(QGraphicsItem *item, scene()->items()) {
+            Bone *bone = dynamic_cast<Bone *>(item);
+            if(bone) {
+                // Draw line to parent bone
+                if(bone->parentBone()) {
+                    painter->setPen(QPen(Qt::black, 0));
+                    painter->drawLine(bone->scenePos(), bone->parentBone()->scenePeakPos());
+                }
 
-            // Draw lines to attachments
-            foreach(Attachment *attachment, bone->attachments()) {
-                painter->setPen(QPen(Qt::darkRed, 0));
-                painter->drawLine(bone->scenePos(), attachment->scenePos());
+                // Draw lines to attachments
+                foreach(Attachment *attachment, bone->attachments()) {
+                    painter->setPen(QPen(Qt::darkRed, 0));
+                    painter->drawLine(bone->scenePos(), attachment->scenePos());
+                }
             }
         }
     }
@@ -552,7 +560,7 @@ void View::drawForeground(QPainter *painter, const QRectF &rect)
     // Draw parental edit line
     if(m_editMode == ParentEditMode) {
         if(m_targetItem) {
-            QPen pen(Qt::green, 2);
+            QPen pen(Qt::green, 0);
             pen.setStyle(Qt::DashLine);
             pen.setCosmetic(true);
             painter->setPen(pen);

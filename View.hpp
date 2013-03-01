@@ -43,6 +43,8 @@ public slots:
     void setRotateTransformMode();
     void setScaleTransformMode();
 
+    void setParentalLinesVisible(bool visible);
+
 signals:
     void switchedToBoneTargetMode();
     void switchedToAttachmentTargetMode();
@@ -104,6 +106,8 @@ private:
     QMap<QGraphicsItem *, qreal> m_scaleBackup;
     QMap<QGraphicsItem *, QPointF> m_translationBackup;
     bool m_hasTranslated;
+
+    bool m_parentalLinesVisible;
 };
 
 #endif // VIEW_HPP

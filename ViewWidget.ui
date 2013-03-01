@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -113,6 +113,19 @@
        </widget>
       </item>
       <item>
+       <widget class="Manhattan::StyledSeparator" name="widget_2" native="true"/>
+      </item>
+      <item>
+       <widget class="QToolButton" name="viewParentalLinesButton">
+        <property name="text">
+         <string>View parental lines</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -150,6 +163,7 @@
     <slot>setParentEditMode()</slot>
     <slot>setBoneTargetMode()</slot>
     <slot>setAttachmentTargetMode()</slot>
+    <slot>setParentalLinesVisible(bool)</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -276,6 +290,22 @@
     <hint type="destinationlabel">
      <x>224</x>
      <y>9</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>viewParentalLinesButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>graphicsView</receiver>
+   <slot>setParentalLinesVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>9</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>309</y>
     </hint>
    </hints>
   </connection>
