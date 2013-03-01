@@ -2,6 +2,7 @@
 #include "Bone.hpp"
 #include "Attachment.hpp"
 #include "Application.hpp"
+#include "Arrow.hpp"
 #include <QKeyEvent>
 #include <QGraphicsItem>
 #include <QTimer>
@@ -256,6 +257,9 @@ void View::setScaleTransformMode()
 void View::setParentalLinesVisible(bool visible)
 {
     m_parentalLinesVisible = visible;
+    foreach(Attachment *attachment, attachments()) {
+        attachment->arrow()->setVisible(visible);
+    }
 }
 
 void View::keyPressEvent(QKeyEvent *event)
@@ -549,10 +553,10 @@ void View::drawForeground(QPainter *painter, const QRectF &rect)
                 }
 
                 // Draw lines to attachments
-                foreach(Attachment *attachment, bone->attachments()) {
-                    painter->setPen(QPen(Qt::darkRed, 0));
-                    painter->drawLine(bone->scenePos(), attachment->scenePos());
-                }
+//                foreach(Attachment *attachment, bone->attachments()) {
+//                    painter->setPen(QPen(Qt::darkRed, 0));
+//                    painter->drawLine(bone->scenePos(), attachment->scenePos());
+//                }
             }
         }
     }

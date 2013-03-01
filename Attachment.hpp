@@ -14,6 +14,8 @@ public:
     Bone *bone() const;
     void setBone(Bone *bone);
 
+    Arrow *arrow() const;
+
     QPointF localPos() const;
     qreal localRotation() const;
     qreal localScale() const;

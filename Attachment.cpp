@@ -31,6 +31,11 @@ void Attachment::setBone(Bone *bone)
     m_arrow->setStartItem(bone);
 }
 
+Arrow *Attachment::arrow() const
+{
+    return m_arrow;
+}
+
 QPointF Attachment::localPos() const
 {
     return m_localPos;
