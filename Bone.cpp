@@ -38,6 +38,7 @@ Bone::Bone(const QString &name, Bone *parent)
 Bone::~Bone()
 {
     qDeleteAll(attachments());
+    delete m_arrow;
 }
 
 Bone *Bone::parentBone() const
