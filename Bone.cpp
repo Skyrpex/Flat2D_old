@@ -9,7 +9,7 @@ static const qreal DefaultBoneLength = 80.0;
 static const qreal DefaultBoneHeight = 5.0;
 static QPolygonF BonePolygon;
 
-static const qreal DefaultJointWidth = 10;
+static const qreal DefaultJointWidth = 15.0;
 static const QRectF JointRect(-DefaultJointWidth/2, -DefaultJointWidth/2, DefaultJointWidth, DefaultJointWidth);
 
 Bone::Bone(const QString &name, Bone *parent)
@@ -205,15 +205,16 @@ void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 //    painter->setPen(QPen(Qt::lightGray, 0));
 
     if(m_isJoint) {
-        painter->drawEllipse(JointRect);
+        painter->drawRect(JointRect);
     }
     else {
-        painter->drawPolygon(bonePolygon());
+//        painter->drawPolygon(bonePolygon());
+//        painter->setBrush(QColor(0, 0, 0, 50));
+//        painter->drawEllipse(QPointF(), DefaultJointWidth/2, DefaultJointWidth/2);
+        painter->drawPath(bonePath());
     }
 
 //    painter->setPen(QPen(Qt::black, 0));
-    painter->setBrush(QColor(0, 0, 0, 50));
-    painter->drawEllipse(QPointF(), 4, 4);
 }
 
 void Bone::setJoint(bool isJoint)
@@ -240,9 +241,19 @@ QPolygonF Bone::bonePolygon() const
                        << QPointF(offset, -height);
 }
 
+QPainterPath Bone::bonePath() const
+{
+    QPainterPath path;
+    path.setFillRule(Qt::WindingFill);
+    path.addPolygon(bonePolygon());
+    path.closeSubpath();
+    path.addEllipse(QPointF(), DefaultJointWidth/2, DefaultJointWidth/2);
+    return path.simplified();
+}
+
 QRectF Bone::boundingRect() const
 {
-    return m_isJoint? JointRect : bonePolygon().boundingRect();
+    return m_isJoint? JointRect : bonePath().boundingRect();
 }
 
 //QPainterPath Bone::shape() const

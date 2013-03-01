@@ -44,6 +44,7 @@ protected:
 
 private:
     QPolygonF bonePolygon() const;
+    QPainterPath bonePath() const;
 
     bool m_isJoint;
 
