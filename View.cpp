@@ -354,8 +354,15 @@ void View::mousePressEvent(QMouseEvent *event)
         Bone *bone = dynamic_cast<Bone *>(itemAtCursor);
         Attachment *attachment = dynamic_cast<Attachment *>(itemAtCursor);
         if(bone || attachment) {
-            m_targetItem = itemAtCursor;
             m_hotSpot = mapToScene(event->pos());
+            m_targetItem = itemAtCursor;
+
+            if(attachment) {
+                setAttachmentTargetMode();
+            }
+            else {
+                setBoneTargetMode();
+            }
         }
     }
 }
@@ -575,16 +582,19 @@ void View::dragLeaveEvent(QDragLeaveEvent *event)
 
 void View::dropEvent(QDropEvent *event)
 {
+    setAttachmentTargetMode();
+
     foreach(QUrl url, event->mimeData()->urls()) {
         QString filePath = url.path().mid(1);
         QPixmap pixmap(filePath);
         Attachment *attachment = new Attachment(pixmap);
 
         QPointF scenePos = mapToScene(event->pos());
+        attachment->setPos(scenePos);
 
-        QPointF localPos = m_root->mapFromScene(scenePos);
-        attachment->setLocalPos(localPos);
-        attachment->setLocalRotation(-m_root->sceneRotation());
+//        QPointF localPos = m_root->mapFromScene(scenePos);
+//        attachment->setLocalPos(localPos);
+//        attachment->setLocalRotation(-m_root->sceneRotation());
 
         m_root->addAttachment(attachment);
         scene()->addItem(attachment);
