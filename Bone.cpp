@@ -10,13 +10,12 @@
 
 static const qreal DefaultBoneLength = 80.0;
 static const qreal DefaultBoneHeight = 5.0;
-static QPolygonF BonePolygon;
 
 static const qreal DefaultJointWidth = 15.0;
 static const QRectF JointRect(-DefaultJointWidth/2, -DefaultJointWidth/2, DefaultJointWidth, DefaultJointWidth);
 
 Bone::Bone(const QString &name, Bone *parent)
-    : QGraphicsItem(parent)
+    : QGraphicsPathItem(parent)
     , m_arrow(new Arrow(parent, this))
     , m_isJoint(true)
     , m_name(name)
@@ -24,18 +23,16 @@ Bone::Bone(const QString &name, Bone *parent)
     , m_sceneScale(1)
     , m_boneLength(0)
 {
-    if(BonePolygon.isEmpty()) {
-        BonePolygon << QPointF(0, 0)
-                    << QPointF(10, 5)
-                    << QPointF(m_boneLength, 0)
-                    << QPointF(10, -5);
-    }
     setFlags(ItemIsSelectable | ItemIsMovable | ItemIsPanel | ItemDoesntPropagateOpacityToChildren);
     setAcceptHoverEvents(true);
+    setBrush(Qt::white);
+    setPen(QPen(Qt::black, 0));
 
     if(parent && parent->scene()) {
         parent->scene()->addItem(m_arrow);
     }
+
+    setJoint(true);
 }
 
 Bone::~Bone()
@@ -179,11 +176,9 @@ QPointF Bone::scenePeakPos() const
 
 void Bone::setBoneLength(qreal length)
 {
-    setJoint(length < DefaultJointWidth);
+    bool isJoint = (length < DefaultJointWidth);
+    setJoint(isJoint);
 
-    if(!m_isJoint) {
-        prepareGeometryChange();
-    }
     m_boneLength = length;
 }
 
@@ -196,36 +191,7 @@ void Bone::setBoneSceneLength(qreal sceneLength)
     setBoneLength(sceneLength / scale());
 }
 
-void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-//    qDebug() << option->state;
-//    QStyleOptionGraphicsItem myOption(*option);
-//    myOption.state &= ~QStyle::State_Selected;
-//    QGraphicsPolygonItem::paint(painter, &myOption, widget);
-
-
-
-
-    bool isSelected = option->state & QStyle::State_Selected;
-//    bool isMouseOver = option->state & QStyle::State_MouseOver;
-    painter->setBrush(isSelected? Qt::white : Qt::gray);
-    painter->setPen(QPen(Qt::black, 0));
-//    painter->setPen(QPen(Qt::lightGray, 0));
-
-    if(m_isJoint) {
-        painter->drawRect(JointRect);
-    }
-    else {
-//        painter->drawPolygon(bonePolygon());
-//        painter->setBrush(QColor(0, 0, 0, 50));
-//        painter->drawEllipse(QPointF(), DefaultJointWidth/2, DefaultJointWidth/2);
-        painter->drawPath(bonePath());
-    }
-
-    //    painter->setPen(QPen(Qt::black, 0));
-}
-
-QVariant Bone::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
+QVariant Bone::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     if(change == ItemSceneChange) {
         if(scene()) {
@@ -241,17 +207,21 @@ QVariant Bone::itemChange(QGraphicsItem::GraphicsItemChange change, const QVaria
         m_arrow->setStartItem(parentItem());
     }
 
-    return QGraphicsItem::itemChange(change, value);
+    return QGraphicsPathItem::itemChange(change, value);
+}
+
+QPolygonF Bone::jointPolygon() const
+{
+    return JointRect;
 }
 
 void Bone::setJoint(bool isJoint)
 {
-    if(m_isJoint == isJoint) {
-        return;
-    }
-
-    prepareGeometryChange();
     m_isJoint = isJoint;
+
+    QPainterPath path;
+    path.addPolygon(isJoint? jointPolygon() : bonePolygon());
+    setPath(path);
 }
 
 Arrow *Bone::arrow() const
@@ -272,20 +242,15 @@ QPolygonF Bone::bonePolygon() const
                        << QPointF(offset, -height);
 }
 
-QPainterPath Bone::bonePath() const
-{
-    QPainterPath path;
-    path.setFillRule(Qt::WindingFill);
-    path.addPolygon(bonePolygon());
-    path.closeSubpath();
-    path.addEllipse(QPointF(), DefaultJointWidth/2, DefaultJointWidth/2);
-    return path.simplified();
-}
-
-QRectF Bone::boundingRect() const
-{
-    return m_isJoint? JointRect : bonePath().boundingRect();
-}
+//QPainterPath Bone::bonePath() const
+//{
+//    QPainterPath path;
+//    path.setFillRule(Qt::WindingFill);
+//    path.addPolygon(bonePolygon());
+//    path.closeSubpath();
+//    path.addEllipse(QPointF(), DefaultJointWidth/2, DefaultJointWidth/2);
+//    return path.simplified();
+//}
 
 //QPainterPath Bone::shape() const
 //{

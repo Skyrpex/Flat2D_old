@@ -1,12 +1,12 @@
 #ifndef BONE_HPP
 #define BONE_HPP
 
-#include <QGraphicsPolygonItem>
+#include <QGraphicsPathItem>
 
 class Attachment;
 class Arrow;
 
-class Bone : public QGraphicsItem
+class Bone : public QGraphicsPathItem
 {
 public:
     Bone(const QString &name, Bone *parent = 0);
@@ -35,7 +35,6 @@ public:
     void setBoneLength(qreal length);
     void setBoneSceneLength(qreal sceneLength);
 
-    QRectF boundingRect() const;
 //    QPainterPath shape() const;
 
     void setJoint(bool isJoint);
@@ -43,12 +42,12 @@ public:
     Arrow *arrow() const;
 
 protected:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
+    QPolygonF jointPolygon() const;
     QPolygonF bonePolygon() const;
-    QPainterPath bonePath() const;
+//    QPainterPath bonePath() const;
 
     Arrow *m_arrow;
 
