@@ -304,7 +304,6 @@ void View::mousePressEvent(QMouseEvent *event)
     }
     else if(m_editMode == CreateEditMode) {
         if(event->buttons() & Qt::LeftButton) {
-            qDebug() << m_targetBone;
             if(m_targetBone) {
                 commitBoneCreation();
             }
@@ -341,7 +340,9 @@ void View::mousePressEvent(QMouseEvent *event)
             }
         }
         else if(event->buttons() & Qt::RightButton) {
-//            cancelScale();
+            if(m_targetBone) {
+                cancelBoneCreation();
+            }
         }
     }
     else if(m_editMode == ParentEditMode) {
@@ -784,4 +785,14 @@ void View::cancelScale()
     m_scaleBackup.clear();
 
     setSelectTransformMode();
+}
+
+void View::cancelBoneCreation()
+{
+    Q_ASSERT( m_targetBone && m_targetBone->parentBone() );
+
+    m_targetBone->parentBone()->setSelected(true);
+
+    delete m_targetBone;
+    m_targetBone = NULL;
 }

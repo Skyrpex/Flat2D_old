@@ -73,6 +73,7 @@ private:
 
     void cancelRotation();
     void cancelScale();
+    void cancelBoneCreation();
 
     Bone *m_root;
 
