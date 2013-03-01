@@ -257,9 +257,16 @@ void View::setScaleTransformMode()
 void View::setParentalLinesVisible(bool visible)
 {
     m_parentalLinesVisible = visible;
-    foreach(Attachment *attachment, attachments()) {
-        attachment->arrow()->setVisible(visible);
+    foreach(Bone *bone, bones()) {
+        bone->arrow()->setVisible(visible);
+        foreach(Attachment *attachment, bone->attachments()) {
+            attachment->arrow()->setVisible(visible);
+        }
     }
+
+//    foreach(Attachment *attachment, attachments()) {
+//        attachment->arrow()->setVisible(visible);
+//    }
 }
 
 void View::keyPressEvent(QKeyEvent *event)
@@ -347,6 +354,7 @@ void View::mousePressEvent(QMouseEvent *event)
 
                     if(parent) {
                         m_targetBone = new Bone("New", parent);
+                        m_targetBone->arrow()->setVisible(m_parentalLinesVisible);
 
                         QPointF scenePos = mapToScene(event->pos());
                         m_targetBone->setScenePos(scenePos);

@@ -40,6 +40,8 @@ public:
 
     void setJoint(bool isJoint);
 
+    Arrow *arrow() const;
+
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);

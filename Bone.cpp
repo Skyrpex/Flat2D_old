@@ -253,6 +253,11 @@ void Bone::setJoint(bool isJoint)
     m_isJoint = isJoint;
 }
 
+Arrow *Bone::arrow() const
+{
+    return m_arrow;
+}
+
 #include <math.h>
 QPolygonF Bone::bonePolygon() const
 {
