@@ -54,7 +54,7 @@ protected:
 
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
-//    void dragLeaveEvent(QDragLeaveEvent *event);
+    void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
 
 private:

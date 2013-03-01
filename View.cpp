@@ -545,14 +545,7 @@ void View::drawForeground(QPainter *painter, const QRectF &rect)
 
 void View::dragEnterEvent(QDragEnterEvent *event)
 {
-    if(event->mimeData()->hasUrls()) {
-        event->accept();
-    }
-}
-
-void View::dragMoveEvent(QDragMoveEvent *event)
-{
-    if(event->mimeData()->hasUrls() /*&& dynamic_cast<Bone *>(itemAt(event->pos()))*/) {
+    if(m_editMode == TransformEditMode && event->mimeData()->hasUrls()) {
         event->accept();
     }
     else {
@@ -560,30 +553,38 @@ void View::dragMoveEvent(QDragMoveEvent *event)
     }
 }
 
-//void View::dragLeaveEvent(QDragLeaveEvent *event)
-//{
-//    if(event->mimeData()->hasUrls() && dynamic_cast<Bone *>(itemAt(event->pos()))) {
-//        event->accept();
-//    }
-//}
+void View::dragMoveEvent(QDragMoveEvent *event)
+{
+    if(m_editMode == TransformEditMode && event->mimeData()->hasUrls()) {
+        event->accept();
+    }
+    else {
+        event->ignore();
+    }
+}
+
+void View::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    if(m_editMode == TransformEditMode) {
+        event->accept();
+    }
+    else {
+        event->ignore();
+    }
+}
 
 void View::dropEvent(QDropEvent *event)
 {
-    Q_ASSERT(event->mimeData()->hasUrls());
-
-//    Bone *bone = dynamic_cast<Bone *>(itemAt(event->pos()));
-//    Q_ASSERT(bone);
-
     foreach(QUrl url, event->mimeData()->urls()) {
         QString filePath = url.path().mid(1);
         QPixmap pixmap(filePath);
         Attachment *attachment = new Attachment(pixmap);
 
         QPointF scenePos = mapToScene(event->pos());
-//        attachment->setLocalRotation(-bone->sceneRotation());
 
         QPointF localPos = m_root->mapFromScene(scenePos);
         attachment->setLocalPos(localPos);
+        attachment->setLocalRotation(-m_root->sceneRotation());
 
         m_root->addAttachment(attachment);
         scene()->addItem(attachment);
