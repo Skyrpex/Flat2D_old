@@ -3,6 +3,8 @@
 #include "Bone.hpp"
 #include <QDebug>
 #include <QGraphicsScene>
+#include <QxMeshDef>
+#include <QxMesh>
 
 Attachment::Attachment(const QPixmap &pixmap)
     : QGraphicsPixmapItem(pixmap)
@@ -13,11 +15,16 @@ Attachment::Attachment(const QPixmap &pixmap)
 {
     setFlags(ItemIsSelectable | ItemIsMovable);
     setZValue(-1);
-
-    QPointF pixmapSize(static_cast<qreal>(pixmap.width()), static_cast<qreal>(pixmap.height()));
-    setOffset(-pixmapSize/2);
-
     setTransformationMode(Qt::SmoothTransformation);
+
+    QPointF offset = -QPointF(static_cast<qreal>(pixmap.width()), static_cast<qreal>(pixmap.height()))/2;
+    setOffset(offset);
+
+    foreach(QxMeshDef meshDef, QxMeshDef::fromImage(pixmap.toImage())) {
+        m_shape.addPolygon(meshDef.boundary);
+        m_shape.closeSubpath();
+    }
+    m_shape.translate(offset);
 }
 
 Bone *Attachment::bone() const
@@ -64,6 +71,11 @@ void Attachment::setLocalRotation(qreal rotation)
 void Attachment::setLocalScale(qreal scale)
 {
     m_localScale = scale;
+}
+
+QPainterPath Attachment::shape() const
+{
+    return m_shape;
 }
 
 QVariant Attachment::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)

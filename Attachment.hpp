@@ -24,6 +24,8 @@ public:
     void setLocalRotation(qreal rotation);
     void setLocalScale(qreal scale);
 
+    QPainterPath shape() const;
+
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
@@ -34,6 +36,7 @@ private:
     QPointF m_localPos;
     qreal m_localRotation;
     qreal m_localScale;
+    QPainterPath m_shape;
 };
 
 #endif // ATTACHMENT_HPP

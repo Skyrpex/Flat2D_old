@@ -568,6 +568,9 @@ void View::drawForeground(QPainter *painter, const QRectF &rect)
 //            }
 //        }
 //    }
+    foreach(QGraphicsItem *item, scene()->items()) {
+        painter->drawPath(item->mapToScene(item->shape()));
+    }
 
     // Draw parental edit line
     if(m_editMode == ParentEditMode) {
