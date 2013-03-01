@@ -50,8 +50,9 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
         return;
     }
 
-    if (myStartItem->collidesWithItem(myEndItem))
+    if(myEndItem->sceneBoundingRect().contains(p1())) {
         return;
+    }
 
     QPen myPen = pen();
     myPen.setColor(myColor);
