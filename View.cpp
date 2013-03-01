@@ -380,20 +380,49 @@ void View::mousePressEvent(QMouseEvent *event)
 //        foreach(QGraphicsItem *item, scene()->items()) {
 //            item->setOpacity(0.5);
 //        }
+        if(event->buttons() & Qt::LeftButton) {
+            QGraphicsItem *itemAtCursor = itemAt(event->pos());
+            Bone *bone = dynamic_cast<Bone *>(itemAtCursor);
+            if(m_targetItem) {
+                // Commit parent edit
+                if(bone && bone != m_targetItem) {
+                    Bone *targetBone = dynamic_cast<Bone *>(m_targetItem);
+                    if(targetBone) {
+                        Bone *pivot = childToBone(targetBone, bone);
+                        if(targetBone == pivot) {
+                            bone->setParentItem(targetBone->parentBone());
+                        }
 
-        QGraphicsItem *itemAtCursor = itemAt(event->pos());
-        Bone *bone = dynamic_cast<Bone *>(itemAtCursor);
-        Attachment *attachment = dynamic_cast<Attachment *>(itemAtCursor);
-        if(bone || attachment) {
-            m_hotSpot = mapToScene(event->pos());
-            m_targetItem = itemAtCursor;
-
-            if(attachment) {
-                setAttachmentTargetMode();
+                        targetBone->setParentItem(bone);
+                    }
+                    else {
+                        Attachment *targetAttachment = dynamic_cast<Attachment *>(m_targetItem);
+                        if(targetAttachment && targetAttachment->bone() != bone) {
+                            bone->addAttachment(targetAttachment);
+                        }
+                    }
+                }
+                m_targetItem = NULL;
             }
             else {
-                setBoneTargetMode();
+                Attachment *attachment = dynamic_cast<Attachment *>(itemAtCursor);
+                // Start parent edit
+                if(bone || attachment) {
+                    m_hotSpot = mapToScene(event->pos());
+                    m_targetItem = itemAtCursor;
+
+                    if(attachment) {
+                        setAttachmentTargetMode();
+                    }
+                    else {
+                        setBoneTargetMode();
+                    }
+                }
             }
+        }
+        else if(event->buttons() & Qt::RightButton) {
+            // Cancel parent edit
+            m_targetItem = NULL;
         }
     }
 }
@@ -492,26 +521,26 @@ void View::mouseReleaseEvent(QMouseEvent *event)
 //            commitBoneCreation();
 //        }
 //    }
-    else if(m_editMode == ParentEditMode) {
-        if(m_targetItem) {
-            QGraphicsItem *itemAtCursor = itemAt(event->pos());
-            Bone *bone = dynamic_cast<Bone *>(itemAtCursor);
-            if(bone && bone != m_targetItem) {
-                Bone *targetBone = dynamic_cast<Bone *>(m_targetItem);
-                if(targetBone) {
-                    targetBone->setParentItem(bone);
-                }
-                else {
-                    Attachment *targetAttachment = dynamic_cast<Attachment *>(m_targetItem);
-                    if(targetAttachment && targetAttachment->bone() != bone) {
-                        bone->addAttachment(targetAttachment);
-                    }
-                }
-            }
-        }
+//    else if(m_editMode == ParentEditMode) {
+//        if(m_targetItem) {
+//            QGraphicsItem *itemAtCursor = itemAt(event->pos());
+//            Bone *bone = dynamic_cast<Bone *>(itemAtCursor);
+//            if(bone && bone != m_targetItem) {
+//                Bone *targetBone = dynamic_cast<Bone *>(m_targetItem);
+//                if(targetBone) {
+//                    targetBone->setParentItem(bone);
+//                }
+//                else {
+//                    Attachment *targetAttachment = dynamic_cast<Attachment *>(m_targetItem);
+//                    if(targetAttachment && targetAttachment->bone() != bone) {
+//                        bone->addAttachment(targetAttachment);
+//                    }
+//                }
+//            }
+//        }
 
-        m_targetItem = NULL;
-    }
+//        m_targetItem = NULL;
+//    }
 }
 
 void View::contextMenuEvent(QContextMenuEvent *event)
@@ -854,4 +883,38 @@ void View::cancelBoneCreation()
 
     delete m_targetBone;
     m_targetBone = NULL;
+}
+
+//bool View::isDescendant(Bone *root, Bone *bone) const
+//{
+//    if(!bone || !root) {
+//        return false;
+//    }
+
+//    QStack<Bone *> bones;
+//    bones.push(root);
+//    while(!bones.isEmpty()) {
+//        Bone *current = bones.pop();
+
+//        if(current == bone) {
+//            return true;
+//        }
+
+//        foreach(Bone *child, current->childBones()) {
+//            bones.push(child);
+//        }
+//    }
+
+//    return false;
+//}
+
+Bone *View::childToBone(Bone *root, Bone *bone) const
+{
+    foreach(Bone *child, root->childBones()) {
+        if(child == bone || childToBone(child, bone)) {
+            return root;
+        }
+    }
+
+    return NULL;
 }

@@ -81,6 +81,9 @@ private:
     void cancelScale();
     void cancelBoneCreation();
 
+//    bool isDescendant(Bone *root, Bone *bone) const;
+    Bone *childToBone(Bone *root, Bone *bone) const;
+
     Bone *m_root;
 
     TargetMode m_targetMode;
