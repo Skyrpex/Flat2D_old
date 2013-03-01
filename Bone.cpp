@@ -1,9 +1,11 @@
 #include "Bone.hpp"
 #include "Attachment.hpp"
+#include "Arrow.hpp"
 #include <QGraphicsScene>
 #include <QDebug>
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
+#include <QGraphicsScene>
 
 static const qreal DefaultBoneLength = 80.0;
 static const qreal DefaultBoneHeight = 5.0;
@@ -14,6 +16,7 @@ static const QRectF JointRect(-DefaultJointWidth/2, -DefaultJointWidth/2, Defaul
 
 Bone::Bone(const QString &name, Bone *parent)
     : QGraphicsItem(parent)
+    , m_arrow(new Arrow(parent, this))
     , m_isJoint(true)
     , m_name(name)
     , m_sceneRotation(0)
@@ -28,6 +31,10 @@ Bone::Bone(const QString &name, Bone *parent)
     }
     setFlags(ItemIsSelectable | ItemIsMovable | ItemIsPanel | ItemDoesntPropagateOpacityToChildren);
     setAcceptHoverEvents(true);
+
+    if(parent && parent->scene()) {
+        parent->scene()->addItem(m_arrow);
+    }
 }
 
 Bone::~Bone()
@@ -214,7 +221,26 @@ void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
         painter->drawPath(bonePath());
     }
 
-//    painter->setPen(QPen(Qt::black, 0));
+    //    painter->setPen(QPen(Qt::black, 0));
+}
+
+QVariant Bone::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
+{
+    if(change == ItemSceneChange) {
+        if(scene()) {
+            scene()->removeItem(m_arrow);
+        }
+
+        QGraphicsScene *scene = value.value<QGraphicsScene *>();
+        if(scene) {
+            scene->addItem(m_arrow);
+        }
+    }
+    else if(change == ItemParentHasChanged) {
+        m_arrow->setStartItem(parentItem());
+    }
+
+    return QGraphicsItem::itemChange(change, value);
 }
 
 void Bone::setJoint(bool isJoint)

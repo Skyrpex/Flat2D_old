@@ -49,6 +49,10 @@ void Arrow::updatePosition()
 void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                   QWidget *)
 {
+    if(!myStartItem || !myEndItem) {
+        return;
+    }
+
     if (myStartItem->collidesWithItem(myEndItem))
         return;
 

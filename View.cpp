@@ -542,24 +542,24 @@ void View::drawForeground(QPainter *painter, const QRectF &rect)
     QGraphicsView::drawForeground(painter, rect);
 
     // Draw parental lines
-    if(m_parentalLinesVisible) {
-        foreach(QGraphicsItem *item, scene()->items()) {
-            Bone *bone = dynamic_cast<Bone *>(item);
-            if(bone) {
-                // Draw line to parent bone
-                if(bone->parentBone()) {
-                    painter->setPen(QPen(Qt::black, 0));
-                    painter->drawLine(bone->scenePos(), bone->parentBone()->scenePeakPos());
-                }
+//    if(m_parentalLinesVisible) {
+//        foreach(QGraphicsItem *item, scene()->items()) {
+//            Bone *bone = dynamic_cast<Bone *>(item);
+//            if(bone) {
+//                // Draw line to parent bone
+//                if(bone->parentBone()) {
+//                    painter->setPen(QPen(Qt::black, 0));
+//                    painter->drawLine(bone->scenePos(), bone->parentBone()->scenePeakPos());
+//                }
 
                 // Draw lines to attachments
 //                foreach(Attachment *attachment, bone->attachments()) {
 //                    painter->setPen(QPen(Qt::darkRed, 0));
 //                    painter->drawLine(bone->scenePos(), attachment->scenePos());
 //                }
-            }
-        }
-    }
+//            }
+//        }
+//    }
 
     // Draw parental edit line
     if(m_editMode == ParentEditMode) {

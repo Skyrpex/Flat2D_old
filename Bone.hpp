@@ -4,6 +4,7 @@
 #include <QGraphicsPolygonItem>
 
 class Attachment;
+class Arrow;
 
 class Bone : public QGraphicsItem
 {
@@ -41,10 +42,13 @@ public:
 
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
     QPolygonF bonePolygon() const;
     QPainterPath bonePath() const;
+
+    Arrow *m_arrow;
 
     bool m_isJoint;
 
