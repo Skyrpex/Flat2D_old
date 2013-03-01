@@ -30,7 +30,80 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="Manhattan::StyledBar" name="toolBar" native="true"/>
+    <widget class="Manhattan::StyledBar" name="toolBar" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>4</number>
+      </property>
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QToolButton" name="createButton">
+        <property name="text">
+         <string>Create</string>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+1</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="transformButton">
+        <property name="text">
+         <string>Transform</string>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+2</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="parentEditButton">
+        <property name="text">
+         <string>Parent edit</string>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+3</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="View" name="graphicsView"/>
@@ -49,6 +122,7 @@
     <slot>setScaleTransformMode()</slot>
     <slot>setCreateEditMode()</slot>
     <slot>setSelectTransformMode()</slot>
+    <slot>setParentEditMode()</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -59,5 +133,54 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>createButton</sender>
+   <signal>pressed()</signal>
+   <receiver>graphicsView</receiver>
+   <slot>setCreateEditMode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>27</x>
+     <y>9</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>transformButton</sender>
+   <signal>pressed()</signal>
+   <receiver>graphicsView</receiver>
+   <slot>setTransformEditMode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>85</x>
+     <y>9</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>parentEditButton</sender>
+   <signal>pressed()</signal>
+   <receiver>graphicsView</receiver>
+   <slot>setParentEditMode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>152</x>
+     <y>9</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

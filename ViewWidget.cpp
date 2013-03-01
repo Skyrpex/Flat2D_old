@@ -9,38 +9,10 @@ ViewWidget::ViewWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QHBoxLayout *layout = new QHBoxLayout(ui->toolBar);
-    layout->setMargin(0);
-    layout->setSpacing(4);
-    layout->setContentsMargins(5, 0, 0, 0);
-
-    QToolButton *createButton = new QToolButton;
-    createButton->setText("Create");
-    createButton->setCheckable(true);
-    createButton->setAutoRaise(true);
-    connect(createButton, SIGNAL(pressed()), ui->graphicsView, SLOT(setCreateEditMode()));
-    layout->addWidget(createButton);
-
-    QToolButton *transformButton = new QToolButton;
-    transformButton->setText("Transform");
-    transformButton->setCheckable(true);
-    transformButton->setAutoRaise(true);
-    connect(transformButton, SIGNAL(pressed()), ui->graphicsView, SLOT(setTransformEditMode()));
-    layout->addWidget(transformButton);
-
-    QToolButton *parentButton = new QToolButton;
-    parentButton->setText("Parent edit");
-    parentButton->setCheckable(true);
-    parentButton->setAutoRaise(true);
-    connect(parentButton, SIGNAL(pressed()), ui->graphicsView, SLOT(setParentEditMode()));
-    layout->addWidget(parentButton);
-
     QButtonGroup *group = new QButtonGroup(this);
-    group->addButton(createButton);
-    group->addButton(transformButton);
-    group->addButton(parentButton);
-
-    layout->addStretch();
+    group->addButton(ui->createButton);
+    group->addButton(ui->transformButton);
+    group->addButton(ui->parentEditButton);
 
     transformButton->setChecked(true);
 }
