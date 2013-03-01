@@ -214,6 +214,8 @@ QVariant Bone::itemChange(GraphicsItemChange change, const QVariant &value)
 
 void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(widget);
+
     QColor penColor;
 
     bool isSelected = (option->state & QStyle::State_Selected);
