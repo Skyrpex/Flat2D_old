@@ -14,11 +14,11 @@ static const QRectF JointRect(-DefaultJointWidth/2, -DefaultJointWidth/2, Defaul
 
 Bone::Bone(const QString &name, Bone *parent)
     : QGraphicsItem(parent)
-    , m_isJoint(false)
+    , m_isJoint(true)
     , m_name(name)
     , m_sceneRotation(0)
     , m_sceneScale(1)
-    , m_boneLength(DefaultBoneLength)
+    , m_boneLength(0)
 {
     if(BonePolygon.isEmpty()) {
         BonePolygon << QPointF(0, 0)

@@ -47,18 +47,18 @@ View::View(QWidget *parent) :
     setStyleSheet("QGraphicsView { border: 0; }");
     setAcceptDrops(true);
 
-    Bone *bone = new Bone("Bone 2", m_root);
-    bone->setScaleFromLength(100);
+//    Bone *bone = new Bone("Bone 2", m_root);
+//    bone->setScaleFromLength(100);
 
-    Attachment *attachment1 = new Attachment(QPixmap(":/images/head.png"));
-    m_root->addAttachment(attachment1);
+//    Attachment *attachment1 = new Attachment(QPixmap(":/images/head.png"));
+//    m_root->addAttachment(attachment1);
 
-    Attachment *attachment2 = new Attachment(QPixmap(":/images/torso.png"));
-    bone->addAttachment(attachment2);
+//    Attachment *attachment2 = new Attachment(QPixmap(":/images/torso.png"));
+//    bone->addAttachment(attachment2);
 
     scene()->addItem(m_root);
-    scene()->addItem(attachment1);
-    scene()->addItem(attachment2);
+//    scene()->addItem(attachment1);
+//    scene()->addItem(attachment2);
 
     setBoneTargetMode();
     setTransformEditMode();
