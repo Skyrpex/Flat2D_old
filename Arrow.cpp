@@ -13,8 +13,10 @@ Arrow::Arrow(QGraphicsItem *startItem, QGraphicsItem *endItem,
     myStartItem = startItem;
     myEndItem = endItem;
     myColor = Qt::black;
-    setPen(QPen(myColor, 5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+//    setPen(QPen(myColor, 0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    setPen(QPen(myColor, 0));
     setZValue(-1000);
+    setOpacity(0.5);
 }
 
 QRectF Arrow::boundingRect() const
@@ -52,7 +54,7 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 
     QPen myPen = pen();
     myPen.setColor(myColor);
-    qreal arrowSize = 20;
+    qreal arrowSize = 5;
     painter->setPen(myPen);
     painter->setBrush(myColor);
 

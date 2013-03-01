@@ -617,6 +617,7 @@ void View::dropEvent(QDropEvent *event)
 
         QPointF scenePos = mapToScene(event->pos());
         attachment->setPos(scenePos);
+        attachment->arrow()->setVisible(m_parentalLinesVisible);
 
 //        QPointF localPos = m_root->mapFromScene(scenePos);
 //        attachment->setLocalPos(localPos);
