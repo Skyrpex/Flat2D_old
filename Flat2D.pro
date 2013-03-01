@@ -5,7 +5,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Flat2D
 TEMPLATE = app
 
-include(qt-manhattan-style/qt-manhattan-style.pri)
+include(libs/qt-manhattan-style/qt-manhattan-style.pri)
 include(libs/QxMesh/QxMesh.pri)
 
 SOURCES += main.cpp \
