@@ -168,7 +168,7 @@ void View::setSelectTransformMode()
 
 void View::setRotateTransformMode()
 {
-    if(m_transformMode == RotateTransformMode) {
+    if(m_transformMode != SelectTransformMode) {
         return;
     }
 
@@ -197,7 +197,7 @@ void View::setRotateTransformMode()
 
 void View::setScaleTransformMode()
 {
-    if(m_transformMode == ScaleTransformMode) {
+    if(m_transformMode != SelectTransformMode) {
         return;
     }
 
