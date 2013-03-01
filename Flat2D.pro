@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     commands/SelectionCommand.cpp \
     TextureDirWidget.cpp \
     TextureIconProvider.cpp \
-    ViewWidget.cpp
+    ViewWidget.cpp \
+    Arrow.cpp
 
 HEADERS  += \
     Bone.hpp \
@@ -35,7 +36,8 @@ HEADERS  += \
     commands/SelectionCommand.hpp \
     TextureDirWidget.hpp \
     TextureIconProvider.hpp \
-    ViewWidget.hpp
+    ViewWidget.hpp \
+    Arrow.hpp
 
 RESOURCES += \
     images.qrc

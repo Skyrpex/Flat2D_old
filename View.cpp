@@ -601,6 +601,7 @@ void View::dragLeaveEvent(QDragLeaveEvent *event)
     }
 }
 
+#include "Arrow.hpp"
 void View::dropEvent(QDropEvent *event)
 {
     setAttachmentTargetMode();
@@ -619,6 +620,8 @@ void View::dropEvent(QDropEvent *event)
 
         m_root->addAttachment(attachment);
         scene()->addItem(attachment);
+
+//        scene()->addItem(new Arrow(m_root, attachment));
     }
 
     event->acceptProposedAction();

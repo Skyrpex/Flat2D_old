@@ -4,6 +4,7 @@
 #include <QGraphicsPixmapItem>
 
 class Bone;
+class Arrow;
 
 class Attachment : public QGraphicsPixmapItem
 {
@@ -21,8 +22,12 @@ public:
     void setLocalRotation(qreal rotation);
     void setLocalScale(qreal scale);
 
+protected:
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
 private:
     Bone *m_bone;
+    Arrow *m_arrow;
 
     QPointF m_localPos;
     qreal m_localRotation;
