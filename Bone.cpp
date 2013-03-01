@@ -6,6 +6,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QPainter>
 #include <QGraphicsScene>
+#include <math.h>
 
 static const qreal DefaultBoneLength = 80.0;
 static const qreal DefaultBoneHeight = 5.0;
@@ -258,7 +259,6 @@ Arrow *Bone::arrow() const
     return m_arrow;
 }
 
-#include <math.h>
 QPolygonF Bone::bonePolygon() const
 {
     qreal height = 0.9*DefaultBoneHeight*log(0.7 * (m_boneLength*DefaultBoneHeight) / DefaultBoneLength);
