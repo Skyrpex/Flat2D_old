@@ -457,8 +457,14 @@ void View::mouseMoveEvent(QMouseEvent *event)
 
             m_targetBone->setBoneSceneLength(line.length());
         }
+        else if(event->buttons() == 0) {
+            QGraphicsView::mouseMoveEvent(event);
+        }
     }
     else if(m_editMode == ParentEditMode) {
+        if(event->buttons() == 0) {
+            QGraphicsView::mouseMoveEvent(event);
+        }
 //        if(event->buttons() == 0) {
 //            foreach(QGraphicsItem *item, scene()->items()) {
 //                item->setOpacity(0.5);
