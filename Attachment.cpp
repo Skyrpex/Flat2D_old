@@ -11,6 +11,8 @@ Attachment::Attachment(const QPixmap &pixmap)
 
     QPointF pixmapSize(static_cast<qreal>(pixmap.width()), static_cast<qreal>(pixmap.height()));
     setOffset(-pixmapSize/2);
+
+    setTransformationMode(Qt::SmoothTransformation);
 }
 
 QPointF Attachment::localPos() const
