@@ -13,9 +13,15 @@ class QUndoStack;
 class Application : public QApplication
 {
 public:
+    enum Color {
+        MouseOverGraphicsItem,
+        SelectedGraphicsItem
+    };
+
     Application(int argc, char **argv);
 
     QUndoStack *undoStack() const;
+    QColor color(Color color) const;
 
 private:
     QUndoStack *m_undoStack;

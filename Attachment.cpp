@@ -1,6 +1,7 @@
 #include "Attachment.hpp"
 #include "Arrow.hpp"
 #include "Bone.hpp"
+#include "Application.hpp"
 #include <QDebug>
 #include <QGraphicsScene>
 #include <QxMeshDef>
@@ -108,8 +109,9 @@ void Attachment::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     bool isSelected = (option->state & QStyle::State_Selected);
     bool isMouseOver = (option->state & QStyle::State_MouseOver);
     if(isSelected || isMouseOver) {
-        Qt::GlobalColor color = (isMouseOver? Qt::white : Qt::cyan);
-        painter->setPen(QPen(color));
+        Application::Color appColor = (isMouseOver? Application::MouseOverGraphicsItem
+                                                  : Application::SelectedGraphicsItem);
+        painter->setPen(QPen(qApp->color(appColor)));
         painter->drawPath(shape());
     }
 }

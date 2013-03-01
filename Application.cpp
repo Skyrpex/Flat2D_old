@@ -19,3 +19,14 @@ QUndoStack *Application::undoStack() const
 {
     return m_undoStack;
 }
+
+QColor Application::color(Application::Color color) const
+{
+    switch(color) {
+    case MouseOverGraphicsItem:
+        return Qt::cyan;
+
+    case SelectedGraphicsItem:
+        return Qt::white;
+    }
+}
