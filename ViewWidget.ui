@@ -93,6 +93,26 @@
        <widget class="Manhattan::StyledSeparator" name="widget" native="true"/>
       </item>
       <item>
+       <widget class="QToolButton" name="bonesButton">
+        <property name="text">
+         <string>Bones</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="attachmentsButton">
+        <property name="text">
+         <string>Attachments</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -119,6 +139,8 @@
    <extends>QGraphicsView</extends>
    <header>View.hpp</header>
    <slots>
+    <signal>switchedToBoneTargetMode()</signal>
+    <signal>switchedToAttachmentTargetMode()</signal>
     <slot>setTransformEditMode()</slot>
     <slot>setRotateTransformMode()</slot>
     <slot>setTranslateTransformMode()</slot>
@@ -126,6 +148,8 @@
     <slot>setCreateEditMode()</slot>
     <slot>setSelectTransformMode()</slot>
     <slot>setParentEditMode()</slot>
+    <slot>setBoneTargetMode()</slot>
+    <slot>setAttachmentTargetMode()</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -188,6 +212,70 @@
     <hint type="destinationlabel">
      <x>199</x>
      <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>attachmentsButton</sender>
+   <signal>pressed()</signal>
+   <receiver>graphicsView</receiver>
+   <slot>setAttachmentTargetMode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>286</x>
+     <y>9</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>bonesButton</sender>
+   <signal>pressed()</signal>
+   <receiver>graphicsView</receiver>
+   <slot>setBoneTargetMode()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>224</x>
+     <y>9</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>graphicsView</sender>
+   <signal>switchedToAttachmentTargetMode()</signal>
+   <receiver>attachmentsButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>159</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>9</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>graphicsView</sender>
+   <signal>switchedToBoneTargetMode()</signal>
+   <receiver>bonesButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>159</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>224</x>
+     <y>9</y>
     </hint>
    </hints>
   </connection>

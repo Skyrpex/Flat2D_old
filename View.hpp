@@ -43,6 +43,10 @@ public slots:
     void setRotateTransformMode();
     void setScaleTransformMode();
 
+signals:
+    void switchedToBoneTargetMode();
+    void switchedToAttachmentTargetMode();
+
 protected:
     void keyPressEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *event);

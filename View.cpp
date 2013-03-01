@@ -93,6 +93,10 @@ View::View(QWidget *parent) :
 
 void View::setBoneTargetMode()
 {
+    if(m_targetMode == BoneTargetMode) {
+        return;
+    }
+
     m_targetMode = BoneTargetMode;
 
     foreach(Bone *bone, bones()) {
@@ -106,10 +110,15 @@ void View::setBoneTargetMode()
         attachment->setOpacity(0.6);
         attachment->setEnabled(false);
     }
+
+    emit switchedToBoneTargetMode();
 }
 
 void View::setAttachmentTargetMode()
 {
+    if(m_targetMode == AttachmentTargetMode) {
+        return;
+    }
     m_targetMode = AttachmentTargetMode;
 
     foreach(Bone *bone, bones()) {
@@ -122,6 +131,8 @@ void View::setAttachmentTargetMode()
         attachment->setOpacity(1);
         attachment->setEnabled(true);
     }
+
+    emit switchedToAttachmentTargetMode();
 }
 
 void View::setTransformEditMode()
@@ -144,8 +155,10 @@ void View::setCreateEditMode()
     setDragMode(NoDrag);
     m_targetBone = NULL;
 
-    if(scene()->selectedItems().count() > 1) {
+    int selectedItemsCount = scene()->selectedItems().count();
+    if(selectedItemsCount != 1) {
         scene()->clearSelection();
+        m_root->setSelected(true);
     }
 
 
