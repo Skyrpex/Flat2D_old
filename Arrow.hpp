@@ -42,6 +42,9 @@
                 QWidget *widget = 0);
 
  private:
+     QPointF p1() const;
+     QPointF p2() const;
+
      QGraphicsItem *myStartItem;
      QGraphicsItem *myEndItem;
      QColor myColor;

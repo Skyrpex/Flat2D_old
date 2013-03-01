@@ -1,4 +1,5 @@
 #include "Arrow.hpp"
+#include "Bone.hpp"
 #include <math.h>
 #include <QPen>
 #include <QPainter>
@@ -38,11 +39,7 @@ QPainterPath Arrow::shape() const
 
 void Arrow::updatePosition()
 {
-    if(!myStartItem || !myEndItem) {
-        setLine(QLineF());
-    }
-
-    QLineF line(myStartItem->scenePos(), myEndItem->scenePos());
+    QLineF line(p1(), p2());
     setLine(line);
 }
 
@@ -62,14 +59,14 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     painter->setPen(myPen);
     painter->setBrush(myColor);
 
-    QLineF centerLine(myStartItem->scenePos(), myEndItem->scenePos());
+    QLineF centerLine(p1(), p2());
     QPolygonF endPolygon = myEndItem->boundingRect();
-    QPointF p1 = endPolygon.first() + myEndItem->scenePos();
+    QPointF p1 = endPolygon.first() + this->p2();
     QPointF p2;
     QPointF intersectPoint;
     QLineF polyLine;
     for (int i = 1; i < endPolygon.count(); ++i) {
-        p2 = endPolygon.at(i) + myEndItem->scenePos();
+        p2 = endPolygon.at(i) + this->p2();
         polyLine = QLineF(p1, p2);
         QLineF::IntersectType intersectType =
                 polyLine.intersect(centerLine, &intersectPoint);
@@ -78,7 +75,7 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
         p1 = p2;
     }
 
-    setLine(QLineF(intersectPoint, myStartItem->scenePos()));
+    setLine(QLineF(intersectPoint, this->p1()));
 
     double angle = ::acos(line().dx() / line().length());
     if (line().dy() >= 0)
@@ -101,4 +98,23 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
         myLine.translate(0,-8.0);
         painter->drawLine(myLine);
     }
+}
+
+QPointF Arrow::p1() const
+{
+    if(!myStartItem) {
+        return QPointF();
+    }
+
+    Bone *bone = dynamic_cast<Bone *>(myStartItem);
+    return bone? bone->scenePeakPos() : myStartItem->scenePos();
+}
+
+QPointF Arrow::p2() const
+{
+    if(!myEndItem) {
+        return QPointF();
+    }
+
+    return myEndItem->scenePos();
 }
