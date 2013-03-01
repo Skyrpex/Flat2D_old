@@ -580,10 +580,12 @@ void View::dropEvent(QDropEvent *event)
         Attachment *attachment = new Attachment(pixmap);
 
         QPointF scenePos = mapToScene(event->pos());
-        attachment->setPos(scenePos - QPointF(pixmap.width(), pixmap.height())/2.0);
 //        attachment->setLocalRotation(-bone->sceneRotation());
 
-//        bone->addAttachment(attachment);
+        QPointF localPos = m_root->mapFromScene(scenePos);
+        attachment->setLocalPos(localPos);
+
+        m_root->addAttachment(attachment);
         scene()->addItem(attachment);
     }
 
