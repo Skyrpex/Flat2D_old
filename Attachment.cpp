@@ -5,6 +5,8 @@
 #include <QGraphicsScene>
 #include <QxMeshDef>
 #include <QxMesh>
+#include <QStyleOptionGraphicsItem>
+#include <QPainter>
 
 Attachment::Attachment(const QPixmap &pixmap)
     : QGraphicsPixmapItem(pixmap)
@@ -16,6 +18,7 @@ Attachment::Attachment(const QPixmap &pixmap)
     setFlags(ItemIsSelectable | ItemIsMovable);
     setZValue(-1);
     setTransformationMode(Qt::SmoothTransformation);
+    setAcceptHoverEvents(true);
 
     QPointF offset = -QPointF(static_cast<qreal>(pixmap.width()), static_cast<qreal>(pixmap.height()))/2;
     setOffset(offset);
@@ -92,4 +95,21 @@ QVariant Attachment::itemChange(QGraphicsItem::GraphicsItemChange change, const 
     }
 
     return QGraphicsPixmapItem::itemChange(change, value);
+}
+
+void Attachment::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    // Default paint (unselected)
+    QStyleOptionGraphicsItem myOption(*option);
+    myOption.state &= ~QStyle::State_Selected;
+    QGraphicsPixmapItem::paint(painter, &myOption, widget);
+
+    // If selected, draw shape
+    bool isSelected = (option->state & QStyle::State_Selected);
+    bool isMouseOver = (option->state & QStyle::State_MouseOver);
+    if(isSelected || isMouseOver) {
+        Qt::GlobalColor color = (isMouseOver? Qt::white : Qt::cyan);
+        painter->setPen(QPen(color));
+        painter->drawPath(shape());
+    }
 }
