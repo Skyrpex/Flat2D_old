@@ -14,7 +14,7 @@ ViewWidget::ViewWidget(QWidget *parent) :
     group->addButton(ui->transformButton);
     group->addButton(ui->parentEditButton);
 
-    transformButton->setChecked(true);
+    ui->transformButton->setChecked(true);
 }
 
 ViewWidget::~ViewWidget()
