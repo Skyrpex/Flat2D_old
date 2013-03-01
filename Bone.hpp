@@ -43,6 +43,7 @@ public:
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
     QPolygonF jointPolygon() const;

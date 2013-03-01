@@ -1,6 +1,7 @@
 #include "Bone.hpp"
 #include "Attachment.hpp"
 #include "Arrow.hpp"
+#include "Application.hpp"
 #include <QGraphicsScene>
 #include <QDebug>
 #include <QStyleOptionGraphicsItem>
@@ -25,7 +26,7 @@ Bone::Bone(const QString &name, Bone *parent)
 {
     setFlags(ItemIsSelectable | ItemIsMovable | ItemIsPanel | ItemDoesntPropagateOpacityToChildren);
     setAcceptHoverEvents(true);
-    setBrush(Qt::white);
+    setBrush(Qt::darkGray);
     setPen(QPen(Qt::black, 0));
 
     if(parent && parent->scene()) {
@@ -211,6 +212,24 @@ QVariant Bone::itemChange(GraphicsItemChange change, const QVariant &value)
     return QGraphicsPathItem::itemChange(change, value);
 }
 
+void Bone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    QColor penColor;
+
+    bool isSelected = (option->state & QStyle::State_Selected);
+    bool isMouseOver = (option->state & QStyle::State_MouseOver);
+    if(isMouseOver) {
+        penColor = qApp->color(Application::MouseOverGraphicsItem);
+    }
+    else if(isSelected) {
+        penColor = qApp->color(Application::SelectedGraphicsItem);
+    }
+
+    painter->setBrush(brush());
+    painter->setPen(QPen(penColor));
+    painter->drawPath(shape());
+}
+
 QPolygonF Bone::jointPolygon() const
 {
     return JointRect;
@@ -240,7 +259,8 @@ QPolygonF Bone::bonePolygon() const
     return QPolygonF() << QPointF(0, 0)
                        << QPointF(offset, height)
                        << QPointF(m_boneLength, 0)
-                       << QPointF(offset, -height);
+                       << QPointF(offset, -height)
+                       << QPointF(0, 0);
 }
 
 //QPainterPath Bone::bonePath() const
